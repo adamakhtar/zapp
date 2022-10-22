@@ -8,7 +8,7 @@ defmodule Zapp.AccountsTest do
 
   describe "get_user_with_account_by_identity!/1" do
     test "returns account and user for given identity" do
-      {:ok, %{user: user, account: account, identity: identity}} =
+      {:ok, %{account: account, identity: identity}} =
         owner_and_account_fixture()
 
       %User{} = user = Accounts.get_user_with_account_by_identity!(identity)

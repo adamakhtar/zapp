@@ -4,6 +4,9 @@ defmodule Zapp.AccountsFixtures do
   entities via the `Zapp.Accounts` context.
   """
 
+  alias Zapp.Accounts.Account
+  alias Zapp.Repo
+
   def unique_identity_email, do: "identity#{System.unique_integer()}@example.com"
   def valid_identity_password, do: "hello world!"
 
@@ -29,9 +32,13 @@ defmodule Zapp.AccountsFixtures do
   #     |> Zapp.Accounts.
   # end
 
-  # def account_fixture(attrs \\ %{}) do
-  #   Repo.insert(%Account{attrs})
-  # end
+  def account_fixture(attrs \\ %{}) do
+    {:ok, account} = %Account{}
+    |> Account.changeset(attrs)
+    |> Repo.insert()
+
+    account
+  end
 
   def owner_and_account_fixture(identity_attrs \\ %{}) do
     identity_attrs
