@@ -1,6 +1,8 @@
 defmodule ZappWeb.Router do
   use ZappWeb, :router
 
+  import ZappWeb.IdentityAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,8 @@ defmodule ZappWeb.Router do
     plug :put_root_layout, {ZappWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_identity
+    plug ZappWeb.Plugs.CurrentUserPlug
   end
 
   pipeline :api do
@@ -52,5 +56,38 @@ defmodule ZappWeb.Router do
 
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  ## Authentication routes
+
+  scope "/", ZappWeb do
+    pipe_through [:browser, :redirect_if_identity_is_authenticated]
+
+    get "/identities/register", IdentityRegistrationController, :new
+    post "/identities/register", IdentityRegistrationController, :create
+    get "/identities/log_in", IdentitySessionController, :new
+    post "/identities/log_in", IdentitySessionController, :create
+    get "/identities/reset_password", IdentityResetPasswordController, :new
+    post "/identities/reset_password", IdentityResetPasswordController, :create
+    get "/identities/reset_password/:token", IdentityResetPasswordController, :edit
+    put "/identities/reset_password/:token", IdentityResetPasswordController, :update
+  end
+
+  scope "/", ZappWeb do
+    pipe_through [:browser, :require_authenticated_identity]
+
+    get "/identities/settings", IdentitySettingsController, :edit
+    put "/identities/settings", IdentitySettingsController, :update
+    get "/identities/settings/confirm_email/:token", IdentitySettingsController, :confirm_email
+  end
+
+  scope "/", ZappWeb do
+    pipe_through [:browser]
+
+    delete "/identities/log_out", IdentitySessionController, :delete
+    get "/identities/confirm", IdentityConfirmationController, :new
+    post "/identities/confirm", IdentityConfirmationController, :create
+    get "/identities/confirm/:token", IdentityConfirmationController, :edit
+    post "/identities/confirm/:token", IdentityConfirmationController, :update
   end
 end

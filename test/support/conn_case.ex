@@ -35,4 +35,30 @@ defmodule ZappWeb.ConnCase do
     Zapp.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
+
+  @doc """
+  Setup helper that registers and logs in identities.
+
+      setup :register_and_log_in_identity
+
+  It stores an updated connection and a registered identity in the
+  test context.
+  """
+  def register_and_log_in_identity(%{conn: conn}) do
+    {:ok, %{identity: identity}} = Zapp.AccountsFixtures.owner_and_account_fixture()
+    %{conn: log_in_identity(conn, identity), identity: identity}
+  end
+
+  @doc """
+  Logs the given `identity` into the `conn`.
+
+  It returns an updated `conn`.
+  """
+  def log_in_identity(conn, identity) do
+    token = Zapp.Accounts.generate_identity_session_token(identity)
+
+    conn
+    |> Phoenix.ConnTest.init_test_session(%{})
+    |> Plug.Conn.put_session(:identity_token, token)
+  end
 end
