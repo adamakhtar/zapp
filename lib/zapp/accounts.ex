@@ -95,7 +95,29 @@ defmodule Zapp.Accounts do
   ## Identity registration
 
   @doc """
-  Registers an indentity and creates a user and an account.
+  Registers an indentity and creates a user and an account but with NO demo newsletter
+
+  ## Examples
+
+      iex> register_owner_with_account_and_demo_newsletter(%Account{})
+      {:ok, %{identity: %Identity{}, account: %Account{}, user: %User{}}
+
+      iex> register_owner_with_account_and_demo_newsletter(%Account{})
+      See register_owner_with_account
+  """
+
+  def register_owner_with_account_and_demo_newsletter(identity_attrs) do
+    result = register_owner_with_account(identity_attrs)
+
+    with {:ok, %{account: account}} <- result do
+      {:ok, _} = Zapp.Newsletters.create_demo_newsletter(account)
+    end
+
+    result
+  end
+
+  @doc """
+  Registers an indentity and creates a user and an account but with NO demo newsletter
 
   ## Examples
 

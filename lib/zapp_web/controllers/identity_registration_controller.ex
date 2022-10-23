@@ -11,9 +11,8 @@ defmodule ZappWeb.IdentityRegistrationController do
   end
 
   def create(conn, %{"identity" => identity_params}) do
-    case Accounts.register_owner_with_account(identity_params) do
+    case Accounts.register_owner_with_account_and_demo_newsletter(identity_params) do
       {:ok, %{identity: identity}} ->
-        {:ok, _} =
           Accounts.deliver_identity_confirmation_instructions(
             identity,
             &Routes.identity_confirmation_url(conn, :edit, &1)

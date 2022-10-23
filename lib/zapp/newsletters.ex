@@ -7,7 +7,7 @@ defmodule Zapp.Newsletters do
   alias Zapp.Repo
 
   alias Zapp.Accounts.Account
-  alias Zapp.Newsletters.Newsletter
+  alias Zapp.Newsletters.{Newsletter, Issue}
 
   @doc """
   Returns the list of newsletters.
@@ -56,6 +56,29 @@ defmodule Zapp.Newsletters do
     %Newsletter{}
     |> Newsletter.changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Creates demo newsletter
+
+  ## Examples
+
+      iex> create_demo_newsletter(%Account{} = account)
+      {:ok, %{newsletter: %Newsletter{}, issue: %Issue{}}
+
+      iex> create_demo_newsletter()
+      {:error, :newsletter, changeset, _}
+
+  """
+  def create_demo_newsletter(%Account{} = account) do
+    newsletter_attrs = %{name: "Amazing Newsletter", account_id: account.id}
+    issue_attrs = %{title: "The Maiden Issue", account_id: account.id}
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:newsletter, change_newsletter(%Newsletter{}, newsletter_attrs))
+    |> Ecto.Multi.insert(:issue, fn %{newsletter: newsletter} ->
+      change_newsletter_issue(newsletter, %Issue{},issue_attrs)
+    end)
+    |> Repo.transaction()
   end
 
   @doc """
@@ -200,6 +223,11 @@ defmodule Zapp.Newsletters do
 
   """
   def change_issue(%Issue{} = issue, attrs \\ %{}) do
+    Issue.changeset(issue, attrs)
+  end
+
+  def change_newsletter_issue(%Newsletter{} = newsletter, %Issue{} = issue, attrs \\ %{}) do
+    attrs = Enum.into(attrs, %{newsletter_id: newsletter.id, account_id: newsletter.account_id})
     Issue.changeset(issue, attrs)
   end
 end

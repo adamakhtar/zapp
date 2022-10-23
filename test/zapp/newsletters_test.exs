@@ -38,6 +38,18 @@ defmodule Zapp.NewslettersTest do
       assert {:error, %Ecto.Changeset{}} = Newsletters.create_newsletter(account, @invalid_attrs)
     end
 
+    test "create_demo_newsletter/1" do
+      account = account_fixture()
+
+      {:ok, %{newsletter: newsletter, issue: issue}} = Newsletters.create_demo_newsletter(account)
+
+      assert newsletter.name == "Amazing Newsletter"
+      assert issue.title == "The Maiden Issue"
+      assert newsletter.account_id == account.id
+      assert issue.account_id == account.id
+      assert issue.newsletter_id == newsletter.id
+    end
+
     test "update_newsletter/2 with valid data updates the newsletter", %{account: account} do
       newsletter = newsletter_fixture(account)
       update_attrs = %{name: "some updated name"}
