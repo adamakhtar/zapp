@@ -79,7 +79,17 @@ defmodule ZappWeb.Router do
     get "/identities/settings", IdentitySettingsController, :edit
     put "/identities/settings", IdentitySettingsController, :update
     get "/identities/settings/confirm_email/:token", IdentitySettingsController, :confirm_email
+
+    live_session :default, on_mount: ZappWeb.LiveAuth do
+      live "/issues", IssueLive.Index, :index
+      live "/issues/new", IssueLive.Index, :new
+
+      live "/issues/:id/edit", IssueLive.Edit, :edit
+
+      live "/issues/:id", IssueLive.Show, :show
+    end
   end
+
 
   scope "/", ZappWeb do
     pipe_through [:browser]

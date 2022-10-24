@@ -6,7 +6,7 @@ defmodule Zapp.Newsletters do
   import Ecto.Query, warn: false
   alias Zapp.Repo
 
-  alias Zapp.Accounts.Account
+  alias Zapp.Accounts.{Account, User}
   alias Zapp.Newsletters.{Newsletter, Issue}
 
   @doc """
@@ -37,6 +37,15 @@ defmodule Zapp.Newsletters do
 
   """
   def get_newsletter!(id), do: Repo.get!(Newsletter, id)
+
+  # TODO - test
+  # Currently accounts can only have one newsletter
+  def get_account_newsletter!(%Account{} = account) do
+    query =
+      from n in Newsletter,
+        where: n.account_id == ^account.id
+    Repo.one!(query)
+  end
 
   @doc """
   Creates a newsletter.
@@ -143,6 +152,15 @@ defmodule Zapp.Newsletters do
     Repo.all(Issue)
   end
 
+  def list_newsletter_issues(%Newsletter{} = newsletter) do
+    query =
+      from i in Issue,
+        where: i.account_id == ^newsletter.account_id,
+        where: i.newsletter_id == ^newsletter.id
+
+    Repo.all(query)
+  end
+
   @doc """
   Gets a single issue.
 
@@ -229,5 +247,24 @@ defmodule Zapp.Newsletters do
   def change_newsletter_issue(%Newsletter{} = newsletter, %Issue{} = issue, attrs \\ %{}) do
     attrs = Enum.into(attrs, %{newsletter_id: newsletter.id, account_id: newsletter.account_id})
     Issue.changeset(issue, attrs)
+  end
+
+
+  ## POLICIES
+
+  def can?(%User{}, :index, Newsletter) do
+    true
+  end
+
+  def can?(%User{} = user, :show, %Newsletter{} = newsletter) do
+    user.account_id == newsletter.account_id
+  end
+
+  def can?(%User{}, :index, Issue) do
+    true
+  end
+
+  def can?(%User{} = user, :show, %Issue{} = issue) do
+    user.account_id == issue.account_id
   end
 end

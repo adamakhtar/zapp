@@ -45,8 +45,8 @@ defmodule ZappWeb.ConnCase do
   test context.
   """
   def register_and_log_in_identity(%{conn: conn}) do
-    {:ok, %{identity: identity}} = Zapp.AccountsFixtures.owner_and_account_fixture()
-    %{conn: log_in_identity(conn, identity), identity: identity}
+    {:ok, %{identity: identity, account: account, user: user}} = Zapp.AccountsFixtures.owner_and_account_fixture()
+    %{conn: log_in_identity(conn, identity), identity: identity, account: account, user: user}
   end
 
   @doc """

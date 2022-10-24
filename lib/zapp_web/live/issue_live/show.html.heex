@@ -1,0 +1,12 @@
+<h1>Show Issue</h1>
+<ul>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @issue.title %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.issue_show_path(@socket, :edit, @issue), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.issue_index_path(@socket, :index) %></span>
