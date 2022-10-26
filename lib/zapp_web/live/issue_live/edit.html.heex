@@ -1,3 +1,22 @@
-<h1>Edit Issue</h1>
+<div class="w-full h-full relative">
 
-<%= @issue.title %>
+  <h1>Edit Issue</h1>
+  <h3><%= @issue.title %></h3>
+
+  <div class="content">
+
+
+  </div>
+
+  <div class="bg-gray-200 absolute top-0 right-0 bottom-0 border-l border-gray-200 w-64 bg-white px-2 pt-2">
+    <div class="overscroll-contain">
+      <%= for tweet <- @tweets do %>
+        <div class="w-full min-h-32 bg-white border border-gray-200 rounded-lg mb-2 px-3 py-2 text-sm">
+           <%= tweet.content %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+

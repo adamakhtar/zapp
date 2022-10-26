@@ -2,3 +2,7 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+
+.phx-connected {
+  height:  100%;
+}

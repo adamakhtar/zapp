@@ -1,10 +1,17 @@
-<ul>
-<%= if @current_identity do %>
-  <li><%= @current_identity.email %></li>
-  <li><%= link "Settings", to: Routes.identity_settings_path(@conn, :edit) %></li>
-  <li><%= link "Log out", to: Routes.identity_session_path(@conn, :delete), method: :delete %></li>
-<% else %>
-  <li><%= link "Register", to: Routes.identity_registration_path(@conn, :new) %></li>
-  <li><%= link "Log in", to: Routes.identity_session_path(@conn, :new) %></li>
-<% end %>
-</ul>
+<nav class="border-b border-gray-200 py-3 text-sm">
+  <div class="container mx-auto">
+    <ul class="flex flex-row justify-end align-baseline space-x-2">
+      <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+        <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
+      <% end %>
+      <%= if @current_identity do %>
+        <li><%= @current_identity.email %></li>
+        <li><%= link "Settings", to: Routes.identity_settings_path(@conn, :edit) %></li>
+        <li><%= link "Log out", to: Routes.identity_session_path(@conn, :delete), method: :delete %></li>
+      <% else %>
+        <li><%= link "Register", to: Routes.identity_registration_path(@conn, :new) %></li>
+        <li><%= link "Log in", to: Routes.identity_session_path(@conn, :new) %></li>
+      <% end %>
+    </ul>
+  </div>
+</nav>
