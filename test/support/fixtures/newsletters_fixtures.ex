@@ -43,10 +43,10 @@ defmodule Zapp.NewslettersFixtures do
     issue
   end
 
-  def tweet_section_fixture(issue, attrs \\ %{}) do
+  def tweet_section_fixture(issue, position, attrs \\ %{}) do
     attrs =  valid_tweet_section_attributes(attrs)
 
-    {:ok, tweet_section} = Zapp.Newsletters.create_issue_tweet_section(issue, attrs)
+    {:ok, tweet_section} = Zapp.Newsletters.create_tweet_section(issue, position, attrs)
 
     tweet_section
   end

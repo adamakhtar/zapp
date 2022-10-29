@@ -13,7 +13,7 @@ defmodule Zapp.IssueEditor do
   # TODO test
   def add_tweet_to_issue(%Issue{} = issue, tweet_id) do
     with tweet <- Library.get_tweet(tweet_id),
-         {:ok, %TweetSection{} = twitter_section} <- Newsletters.create_issue_tweet_section(issue, tweet) do
+         {:ok, %TweetSection{} = twitter_section} <- Newsletters.create_tweet_section(issue, 1, tweet) do
       {:ok, twitter_section}
     else
       err ->

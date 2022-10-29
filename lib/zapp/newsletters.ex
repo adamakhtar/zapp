@@ -7,7 +7,7 @@ defmodule Zapp.Newsletters do
   alias Zapp.Repo
 
   alias Zapp.Accounts.{Account, User}
-  alias Zapp.Newsletters.{Newsletter, Issue, TweetSection}
+  alias Zapp.Newsletters.{Newsletter, Issue, Section, TweetSection}
 
   @doc """
   Returns the list of newsletters.
@@ -137,8 +137,6 @@ defmodule Zapp.Newsletters do
     Newsletter.changeset(newsletter, attrs)
   end
 
-  alias Zapp.Newsletters.Issue
-
   @doc """
   Returns the list of issues.
 
@@ -178,14 +176,15 @@ defmodule Zapp.Newsletters do
   def get_issue!(id), do: Repo.get!(Issue, id)
 
   # TODO test
-  def get_issue_with_tweet_sections!(id) do
-    IO.inspect(id)
+  def get_issue_with_sections!(id) do
     query =
       from i in Issue,
         distinct: i.id,
         where: i.id == ^id,
-        left_join: ts in assoc(i, :tweet_sections),
-        preload: [:tweet_sections]
+        left_join: s in assoc(i, :sections),
+        left_join: tw in assoc(s, :tweet_section),
+        order_by: s.position,
+        preload: [sections: :tweet_section]
 
     Repo.one!(query)
   end
@@ -262,14 +261,38 @@ defmodule Zapp.Newsletters do
     Issue.changeset(issue, attrs)
   end
 
-  def change_tweet_section(%Issue{} = issue, %TweetSection{} = twitter_section, attrs \\ %{}) do
-    twitter_section
-    |> TweetSection.changeset(Enum.into(attrs, %{issue_id: issue.id}))
+
+  ## Sections
+
+  def list_sections() do
+    query =
+      from s in Section,
+      left_join: ts in assoc(s, :tweet_section),
+      preload: [:tweet_section]
+
+    Repo.all(query)
   end
 
-  def create_issue_tweet_section(%Issue{} = issue, attrs \\ %{}) do
+  def change_issue_section(%Issue{} = issue, %Section{} = section, attrs \\ %{}) do
+    attrs = Enum.into(attrs, %{issue_id: issue.id})
+    Section.changeset(section, attrs)
+  end
+
+  ## Tweet Sections
+
+  def change_tweet_section(%Issue{} = issue, %TweetSection{} = tweet_section, attrs \\ %{}) do
+    tweet_section
+    |> TweetSection.changeset(attrs)
+  end
+
+  def create_tweet_section(%Issue{} = issue, position, tweet_section_attrs \\ %{}) do
+    tweet_section_attrs = Enum.into(
+      tweet_section_attrs,
+      %{section: %{ issue_id: issue.id, position: position}}
+    )
+
     issue
-    |> change_tweet_section(%TweetSection{}, attrs)
+    |> change_tweet_section(%TweetSection{}, tweet_section_attrs)
     |> Repo.insert()
   end
 

@@ -6,9 +6,9 @@
   <div class="content h-full w-128 border border-gray-200"
        data-dropzone="issue">
 
-    <%= for tweet_section <- @issue.tweet_sections do %>
+    <%= for section <- @issue.sections do %>
       <div class="border border-gray-200 mb-4 py-3 px-4 text-sm">
-        <%= tweet_section.body %>
+        <%= section.tweet_section.body %>
       </div>
     <% end %>
 

@@ -101,16 +101,16 @@ defmodule Zapp.NewslettersTest do
       assert Newsletters.get_issue!(issue.id) == issue
     end
 
-    test "get_issue_with_tweet_sections/1 returns the issue with preloaded tweet_sections given id",
+    test "get_issue_with_sections/1 returns the issue with preloaded tweet_sections given id",
         %{newsletter: newsletter} do
       issue = issue_fixture(newsletter)
-      tweet_section = tweet_section_fixture(issue, %{body: "Hi there"})
+      tweet_section = tweet_section_fixture(issue, 1, %{body: "Hi there"})
 
-      fetched_issue = Newsletters.get_issue_with_tweet_sections!(issue.id)
+      fetched_issue = Newsletters.get_issue_with_sections!(issue.id)
 
       assert fetched_issue.id == issue.id
-      assert Enum.count(fetched_issue.tweet_sections) == 1
-      assert Enum.at(fetched_issue.tweet_sections, 0).body == "Hi there"
+      assert Enum.count(fetched_issue.sections) == 1
+      assert Enum.at(fetched_issue.sections, 0).tweet_section.body == "Hi there"
     end
 
     test "create_issue/1 with valid data creates a issue", %{newsletter: newsletter} do
@@ -153,6 +153,41 @@ defmodule Zapp.NewslettersTest do
   end
 
 
+  describe "sections" do
+    alias Zapp.Newsletters.{Issue, Section}
+
+    import Zapp.NewslettersFixtures
+    import Zapp.AccountsFixtures
+
+    @invalid_attrs %{title: nil}
+
+    setup do
+      account = account_fixture()
+      newsletter = newsletter_fixture(account)
+      issue = issue_fixture(newsletter)
+
+      %{issue: issue}
+    end
+
+    test "change_issue_section/2 returns changeset", %{issue: issue} do
+      changeset = Newsletters.change_issue_section(issue, %Section{}, %{position: 1})
+
+      assert changeset.changes.issue_id == issue.id
+      assert changeset.changes.position == 1
+    end
+
+    test "list_sections/0 returns sections preloaded with section types", %{issue: issue} do
+      tweet_section_1 = tweet_section_fixture(issue, 1, %{body: "first"})
+      tweet_section_2 = tweet_section_fixture(issue, 2, %{body: "second"})
+
+      sections = Newsletters.list_sections()
+
+      assert Enum.count(sections) == 2
+      assert Enum.at(sections, 0).tweet_section.body == "first"
+      assert Enum.at(sections, 1).tweet_section.body == "second"
+    end
+  end
+
   describe "tweet_sections" do
     alias Zapp.Newsletters.{Issue, TweetSection}
 
@@ -172,14 +207,14 @@ defmodule Zapp.NewslettersTest do
     test "change_tweet_section/3 returns changeset", %{issue: issue} do
       changeset = Newsletters.change_tweet_section(issue, %TweetSection{}, %{body: "Hi there"})
 
-      assert changeset.changes.issue_id == issue.id
       assert changeset.changes.body == "Hi there"
     end
 
-    test "create_issue_tweet_section/2 returns changeset", %{issue: issue} do
-      {:ok, %TweetSection{} = tweet_section} = Newsletters.create_issue_tweet_section(issue, %{body: "Hi there"})
+    test "create_issue_tweet_section/3 creates tweet_section with section", %{issue: issue} do
+      {:ok, %TweetSection{} = tweet_section} = Newsletters.create_tweet_section(issue, 1, %{body: "Hi there"})
 
-      assert tweet_section.issue_id == issue.id
+      assert tweet_section.section.issue_id == issue.id
+      assert tweet_section.section.position == 1
       assert tweet_section.body == "Hi there"
     end
   end
