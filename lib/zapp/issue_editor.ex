@@ -11,13 +11,20 @@ defmodule Zapp.IssueEditor do
   alias Zapp.Library
 
   # TODO test
-  def add_tweet_to_issue(%Issue{} = issue, tweet_id) do
+  def add_tweet_to_issue(%Issue{} = issue, %{tweet_id: tweet_id, position: position}) do
     with tweet <- Library.get_tweet(tweet_id),
-         {:ok, %TweetSection{} = twitter_section} <- Newsletters.create_tweet_section(issue, 1, tweet) do
-      {:ok, twitter_section}
+         {:ok, %TweetSection{} = tweet_section} <- Newsletters.create_tweet_section(issue, position, tweet) do
+      {:ok, tweet_section}
     else
       err ->
         err
     end
+  end
+
+  # TOOD test
+  def move_section(%Issue{} = issue, %{section_id: section_id, position: position}) do
+    section = Newsletters.get_section!(section_id)
+    {:ok, section} = Newsletters.move_section(section, position)
+    {:ok, section}
   end
 end

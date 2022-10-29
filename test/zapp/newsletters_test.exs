@@ -101,16 +101,25 @@ defmodule Zapp.NewslettersTest do
       assert Newsletters.get_issue!(issue.id) == issue
     end
 
-    test "get_issue_with_sections/1 returns the issue with preloaded tweet_sections given id",
+    alias Zapp.Newsletters.Section
+
+    test "get_issue_with_sections/1 returns the issue with preloaded sections orderd by rank for given id",
         %{newsletter: newsletter} do
       issue = issue_fixture(newsletter)
-      tweet_section = tweet_section_fixture(issue, 1, %{body: "Hi there"})
+      tweet_section_1 = tweet_section_fixture(issue, 0, %{body: "first"})
+      tweet_section_2 = tweet_section_fixture(issue, 1, %{body: "second"})
+      tweet_section_3 = tweet_section_fixture(issue, 2, %{body: "third"})
+      # now insert a new record inbetween
+      tweet_section_4 = tweet_section_fixture(issue, 0, %{body: "fourth"})
 
       fetched_issue = Newsletters.get_issue_with_sections!(issue.id)
 
       assert fetched_issue.id == issue.id
-      assert Enum.count(fetched_issue.sections) == 1
-      assert Enum.at(fetched_issue.sections, 0).tweet_section.body == "Hi there"
+      assert Enum.count(fetched_issue.sections) == 4
+      assert Enum.at(fetched_issue.sections, 0).id == tweet_section_4.section.id
+      assert Enum.at(fetched_issue.sections, 1).id == tweet_section_1.section.id
+      assert Enum.at(fetched_issue.sections, 2).id == tweet_section_2.section.id
+      assert Enum.at(fetched_issue.sections, 3).id == tweet_section_3.section.id
     end
 
     test "create_issue/1 with valid data creates a issue", %{newsletter: newsletter} do
@@ -211,11 +220,19 @@ defmodule Zapp.NewslettersTest do
     end
 
     test "create_issue_tweet_section/3 creates tweet_section with section", %{issue: issue} do
+      tweet_section_fixture(issue, 0, %{body: "first"})
+      tweet_section_fixture(issue, 1, %{body: "second"})
+
       {:ok, %TweetSection{} = tweet_section} = Newsletters.create_tweet_section(issue, 1, %{body: "Hi there"})
 
-      assert tweet_section.section.issue_id == issue.id
-      assert tweet_section.section.position == 1
-      assert tweet_section.body == "Hi there"
+      reloaded_issue = Newsletters.get_issue_with_sections!(issue.id)
+      # assert tweet_section.section.issue_id == issue.id
+      # assert tweet_section.section.position == 1
+      # assert tweet_section.body == "Hi there"
+      # assert Enum.at(reloaded_issue.sections, 0).tweet_section.body == "first"
+      assert Enum.at(reloaded_issue.sections, 2).tweet_section.body == "second"
+      # assert Enum.at(reloaded_issue.sections, 1).tweet_section.body == "Hi there"
+
     end
   end
 end

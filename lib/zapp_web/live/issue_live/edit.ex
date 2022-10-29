@@ -27,8 +27,34 @@ defmodule ZappWeb.IssueLive.Edit do
   end
 
   @impl true
-  def handle_event("tweet_dropped", %{"tweet_id" => tweet_id, "index" => index}, socket) do
-    case IssueEditor.add_tweet_to_issue(socket.assigns.issue, String.to_integer(tweet_id)) do
+  def handle_event("tweet_dropped", %{"tweet_id" => tweet_id, "position" => position}, socket) do
+    prepared_attrs = %{
+      tweet_id: String.to_integer(tweet_id),
+      position: position
+    }
+
+    case IssueEditor.add_tweet_to_issue(socket.assigns.issue, prepared_attrs) do
+      {:ok, _tweet_section} ->
+        issue = Newsletters.get_issue_with_sections!(socket.assigns.issue.id)
+        {:noreply,
+         socket
+         |> assign(issue: issue)
+        }
+
+      {:error, _} ->
+        # TODO
+    end
+  end
+
+
+  @impl true
+  def handle_event("section_moved", %{"section_id" => section_id, "position" => position}, socket) do
+    prepared_attrs = %{
+      section_id: String.to_integer(section_id),
+      position: position
+    }
+
+    case IssueEditor.move_section(socket.assigns.issue, prepared_attrs) do
       {:ok, _tweet_section} ->
         issue = Newsletters.get_issue_with_sections!(socket.assigns.issue.id)
         {:noreply,

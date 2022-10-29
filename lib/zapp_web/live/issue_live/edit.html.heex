@@ -3,11 +3,13 @@
   <h1>Edit Issue</h1>
   <h3><%= @issue.title %></h3>
 
-  <div class="content h-full w-128 border border-gray-200"
+  <div class="content h-full w-64 border border-gray-200"
        data-dropzone="issue">
 
     <%= for section <- @issue.sections do %>
-      <div class="border border-gray-200 mb-4 py-3 px-4 text-sm">
+      <div draggable="true"
+           id={"#{section.id}"}
+           class="js-draggable border border-gray-200 mb-4 py-3 px-4 text-sm">
         <%= section.tweet_section.body %>
       </div>
     <% end %>

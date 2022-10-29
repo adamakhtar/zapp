@@ -177,16 +177,17 @@ defmodule Zapp.Newsletters do
 
   # TODO test
   def get_issue_with_sections!(id) do
-    query =
-      from i in Issue,
-        distinct: i.id,
-        where: i.id == ^id,
-        left_join: s in assoc(i, :sections),
-        left_join: tw in assoc(s, :tweet_section),
-        order_by: s.position,
-        preload: [sections: :tweet_section]
+    sections_query =
+      from s in Section,
+      order_by: [asc: s.rank],
+      preload: [:tweet_section]
 
-    Repo.one!(query)
+    issue_query =
+      from i in Issue,
+        where: i.id == ^id,
+        preload: [sections: ^sections_query]
+
+    Repo.one!(issue_query)
   end
 
   @doc """
@@ -273,9 +274,22 @@ defmodule Zapp.Newsletters do
     Repo.all(query)
   end
 
+  # TODO - check if this is used and remove if not
   def change_issue_section(%Issue{} = issue, %Section{} = section, attrs \\ %{}) do
     attrs = Enum.into(attrs, %{issue_id: issue.id})
     Section.changeset(section, attrs)
+  end
+
+  # TODO - test
+  # TODO - auth
+  def move_section(%Section{} = section, position) do
+    section
+    |> Section.changeset(%{position: position})
+    |> Repo.update()
+  end
+
+  def get_section!(section_id) do
+    Repo.get!(Section, section_id)
   end
 
   ## Tweet Sections
