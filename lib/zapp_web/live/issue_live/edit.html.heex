@@ -1,18 +1,28 @@
-<div class="w-full h-full relative">
+<div class="w-full h-full relative" phx-hook="Drag" id="drag">
 
   <h1>Edit Issue</h1>
   <h3><%= @issue.title %></h3>
 
-  <div class="content">
+  <div class="content h-full w-128 border border-gray-200"
+       data-dropzone="issue">
+
+    <%= for tweet_section <- @issue.tweet_sections do %>
+      <div class="border border-gray-200 mb-4 py-3 px-4 text-sm">
+        <%= tweet_section.body %>
+      </div>
+    <% end %>
 
 
   </div>
 
   <div class="bg-gray-200 absolute top-0 right-0 bottom-0 border-l border-gray-200 w-64 bg-white px-2 pt-2">
-    <div class="overscroll-contain">
+    <div class="overscroll-contain"
+         data-dropzone="tweets">
       <%= for tweet <- @tweets do %>
-        <div class="w-full min-h-32 bg-white border border-gray-200 rounded-lg mb-2 px-3 py-2 text-sm">
-           <%= tweet.content %>
+        <div draggable="true"
+             id={"#{tweet.id}"}
+             class="js-draggable w-full min-h-32 bg-white border border-gray-200 rounded-lg mb-2 px-3 py-2 text-sm">
+           <%= tweet.body %>
         </div>
       <% end %>
     </div>

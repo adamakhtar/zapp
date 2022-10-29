@@ -16,6 +16,12 @@ defmodule Zapp.NewslettersFixtures do
     })
   end
 
+  def valid_tweet_section_attributes(attrs \\ %{}) do
+     Enum.into(attrs, %{
+      body: "My first tweet"
+    })
+  end
+
   @doc """
   Generate a newsletter.
   """
@@ -35,5 +41,13 @@ defmodule Zapp.NewslettersFixtures do
     {:ok, issue} = Zapp.Newsletters.create_issue(newsletter, attrs)
 
     issue
+  end
+
+  def tweet_section_fixture(issue, attrs \\ %{}) do
+    attrs =  valid_tweet_section_attributes(attrs)
+
+    {:ok, tweet_section} = Zapp.Newsletters.create_issue_tweet_section(issue, attrs)
+
+    tweet_section
   end
 end

@@ -7,7 +7,7 @@ defmodule Zapp.Newsletters do
   alias Zapp.Repo
 
   alias Zapp.Accounts.{Account, User}
-  alias Zapp.Newsletters.{Newsletter, Issue}
+  alias Zapp.Newsletters.{Newsletter, Issue, TweetSection}
 
   @doc """
   Returns the list of newsletters.
@@ -177,6 +177,19 @@ defmodule Zapp.Newsletters do
   """
   def get_issue!(id), do: Repo.get!(Issue, id)
 
+  # TODO test
+  def get_issue_with_tweet_sections!(id) do
+    IO.inspect(id)
+    query =
+      from i in Issue,
+        distinct: i.id,
+        where: i.id == ^id,
+        left_join: ts in assoc(i, :tweet_sections),
+        preload: [:tweet_sections]
+
+    Repo.one!(query)
+  end
+
   @doc """
   Creates a issue.
 
@@ -249,6 +262,16 @@ defmodule Zapp.Newsletters do
     Issue.changeset(issue, attrs)
   end
 
+  def change_tweet_section(%Issue{} = issue, %TweetSection{} = twitter_section, attrs \\ %{}) do
+    twitter_section
+    |> TweetSection.changeset(Enum.into(attrs, %{issue_id: issue.id}))
+  end
+
+  def create_issue_tweet_section(%Issue{} = issue, attrs \\ %{}) do
+    issue
+    |> change_tweet_section(%TweetSection{}, attrs)
+    |> Repo.insert()
+  end
 
   ## POLICIES
 

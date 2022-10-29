@@ -101,6 +101,18 @@ defmodule Zapp.NewslettersTest do
       assert Newsletters.get_issue!(issue.id) == issue
     end
 
+    test "get_issue_with_tweet_sections/1 returns the issue with preloaded tweet_sections given id",
+        %{newsletter: newsletter} do
+      issue = issue_fixture(newsletter)
+      tweet_section = tweet_section_fixture(issue, %{body: "Hi there"})
+
+      fetched_issue = Newsletters.get_issue_with_tweet_sections!(issue.id)
+
+      assert fetched_issue.id == issue.id
+      assert Enum.count(fetched_issue.tweet_sections) == 1
+      assert Enum.at(fetched_issue.tweet_sections, 0).body == "Hi there"
+    end
+
     test "create_issue/1 with valid data creates a issue", %{newsletter: newsletter} do
       valid_attrs = %{title: "some title"}
 
@@ -137,6 +149,38 @@ defmodule Zapp.NewslettersTest do
     test "change_issue/1 returns a issue changeset", %{newsletter: newsletter} do
       issue = issue_fixture(newsletter)
       assert %Ecto.Changeset{} = Newsletters.change_issue(issue)
+    end
+  end
+
+
+  describe "tweet_sections" do
+    alias Zapp.Newsletters.{Issue, TweetSection}
+
+    import Zapp.NewslettersFixtures
+    import Zapp.AccountsFixtures
+
+    @invalid_attrs %{title: nil}
+
+    setup do
+      account = account_fixture()
+      newsletter = newsletter_fixture(account)
+      issue = issue_fixture(newsletter)
+
+      %{issue: issue}
+    end
+
+    test "change_tweet_section/3 returns changeset", %{issue: issue} do
+      changeset = Newsletters.change_tweet_section(issue, %TweetSection{}, %{body: "Hi there"})
+
+      assert changeset.changes.issue_id == issue.id
+      assert changeset.changes.body == "Hi there"
+    end
+
+    test "create_issue_tweet_section/2 returns changeset", %{issue: issue} do
+      {:ok, %TweetSection{} = tweet_section} = Newsletters.create_issue_tweet_section(issue, %{body: "Hi there"})
+
+      assert tweet_section.issue_id == issue.id
+      assert tweet_section.body == "Hi there"
     end
   end
 end
