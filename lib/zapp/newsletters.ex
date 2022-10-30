@@ -292,6 +292,11 @@ defmodule Zapp.Newsletters do
     Repo.get!(Section, section_id)
   end
 
+  # TODO test / authorise
+  def delete_section(section) do
+    Repo.delete(section)
+  end
+
   ## Tweet Sections
 
   def change_tweet_section(%Issue{} = issue, %TweetSection{} = tweet_section, attrs \\ %{}) do

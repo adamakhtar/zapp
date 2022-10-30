@@ -7,11 +7,7 @@
        data-dropzone="issue">
 
     <%= for section <- @issue.sections do %>
-      <div draggable="true"
-           id={"#{section.id}"}
-           class="js-draggable border border-gray-200 mb-4 py-3 px-4 text-sm">
-        <%= section.tweet_section.body %>
-      </div>
+      <%= live_component @socket, ZappWeb.IssueEditorLive.SectionComponent, id: section.id, section: section %>
     <% end %>
 
 
