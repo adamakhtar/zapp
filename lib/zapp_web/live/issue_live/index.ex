@@ -25,7 +25,7 @@ defmodule ZappWeb.IssueLive.Index do
       {:ok, issue} ->
          socket
          |> put_flash(:info, "Issue created successfully")
-         |> push_redirect(to: Routes.issue_edit_path(socket, :edit, issue))
+         |> push_redirect(to: Routes.issue_editor_show_path(socket, :show, issue))
 
       {:error, _changeset} ->
         {:noreply,

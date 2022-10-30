@@ -168,8 +168,6 @@ defmodule Zapp.NewslettersTest do
     import Zapp.NewslettersFixtures
     import Zapp.AccountsFixtures
 
-    @invalid_attrs %{title: nil}
-
     setup do
       account = account_fixture()
       newsletter = newsletter_fixture(account)
@@ -186,8 +184,8 @@ defmodule Zapp.NewslettersTest do
     end
 
     test "list_sections/0 returns sections preloaded with section types", %{issue: issue} do
-      tweet_section_1 = tweet_section_fixture(issue, 1, %{body: "first"})
-      tweet_section_2 = tweet_section_fixture(issue, 2, %{body: "second"})
+      tweet_section_fixture(issue, 1, %{body: "first"})
+      tweet_section_fixture(issue, 2, %{body: "second"})
 
       sections = Newsletters.list_sections()
 
@@ -202,8 +200,6 @@ defmodule Zapp.NewslettersTest do
 
     import Zapp.NewslettersFixtures
     import Zapp.AccountsFixtures
-
-    @invalid_attrs %{title: nil}
 
     setup do
       account = account_fixture()
@@ -226,13 +222,12 @@ defmodule Zapp.NewslettersTest do
       {:ok, %TweetSection{} = tweet_section} = Newsletters.create_tweet_section(issue, 1, %{body: "Hi there"})
 
       reloaded_issue = Newsletters.get_issue_with_sections!(issue.id)
-      # assert tweet_section.section.issue_id == issue.id
-      # assert tweet_section.section.position == 1
-      # assert tweet_section.body == "Hi there"
-      # assert Enum.at(reloaded_issue.sections, 0).tweet_section.body == "first"
+      assert tweet_section.section.issue_id == issue.id
+      assert tweet_section.section.position == 1
+      assert tweet_section.body == "Hi there"
+      assert Enum.at(reloaded_issue.sections, 0).tweet_section.body == "first"
       assert Enum.at(reloaded_issue.sections, 2).tweet_section.body == "second"
-      # assert Enum.at(reloaded_issue.sections, 1).tweet_section.body == "Hi there"
-
+      assert Enum.at(reloaded_issue.sections, 1).tweet_section.body == "Hi there"
     end
   end
 end

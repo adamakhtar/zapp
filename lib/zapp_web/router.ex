@@ -84,9 +84,9 @@ defmodule ZappWeb.Router do
       live "/issues", IssueLive.Index, :index
       live "/issues/new", IssueLive.Index, :new
 
-      live "/issues/:id/edit", IssueLive.Edit, :edit
-
       live "/issues/:id", IssueLive.Show, :show
+
+      live "/issue_editor/:id/", IssueEditorLive.Show, :show
     end
   end
 

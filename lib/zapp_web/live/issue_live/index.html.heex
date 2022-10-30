@@ -15,7 +15,7 @@
 
         <td>
           <span><%= live_redirect "Show", to: Routes.issue_show_path(@socket, :show, issue) %></span>
-          <span><%= live_redirect "Edit", to: Routes.issue_edit_path(@socket, :edit, issue) %></span>
+          <span><%= live_redirect "Edit", to: Routes.issue_editor_show_path(@socket, :show, issue) %></span>
           <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: issue.id, data: [confirm: "Are you sure?"] %></span>
         </td>
       </tr>

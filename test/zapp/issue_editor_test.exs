@@ -6,14 +6,10 @@ defmodule Zapp.IssueEditorTest do
   describe "newsletters" do
     alias Zapp.IssueEditor
     alias Zapp.Library
-    alias Zapp.Newsletters.{Newsletter, TweetSection}
-
-
+    alias Zapp.Newsletters.{TweetSection}
 
     import Zapp.NewslettersFixtures
     import Zapp.AccountsFixtures
-
-    @invalid_attrs %{name: nil}
 
     setup do
       %{account: account_fixture()}

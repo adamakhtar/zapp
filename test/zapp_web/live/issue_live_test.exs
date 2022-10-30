@@ -39,7 +39,7 @@ defmodule ZappWeb.IssueLiveTest do
 
       created_issue = Issue |> Ecto.Query.last |> Zapp.Repo.one
 
-      assert_redirect(index_live, Routes.issue_edit_path(conn, :edit, created_issue))
+      assert_redirect(index_live, Routes.issue_editor_show_path(conn, :show, created_issue))
 
       assert html =~ "Issue created successfully"
       assert html =~ "A new issue"
@@ -50,18 +50,6 @@ defmodule ZappWeb.IssueLiveTest do
 
       assert index_live |> element("#issue-#{issue.id} a", "Delete") |> render_click()
       refute has_element?(index_live, "#issue-#{issue.id}")
-    end
-  end
-
-   describe "Edit" do
-    setup :create_newsletter
-    setup :create_issue
-
-    test "displays issue", %{conn: conn, issue: issue} do
-      {:ok, _edit_live, html} = live(conn, Routes.issue_edit_path(conn, :edit, issue))
-
-      assert html =~ "Edit Issue"
-      assert html =~ issue.title
     end
   end
 end

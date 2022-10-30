@@ -1,4 +1,4 @@
-defmodule ZappWeb.IssueLive.Edit do
+defmodule ZappWeb.IssueEditorLive.Show do
   use ZappWeb, :live_view
 
   alias Zapp.Newsletters
