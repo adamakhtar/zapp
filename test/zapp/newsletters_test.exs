@@ -209,8 +209,8 @@ defmodule Zapp.NewslettersTest do
       %{issue: issue}
     end
 
-    test "change_tweet_section/3 returns changeset", %{issue: issue} do
-      changeset = Newsletters.change_tweet_section(issue, %TweetSection{}, %{body: "Hi there"})
+    test "change_tweet_section/2 returns changeset" do
+      changeset = Newsletters.change_tweet_section(%TweetSection{}, %{body: "Hi there"})
 
       assert changeset.changes.body == "Hi there"
     end
@@ -228,6 +228,42 @@ defmodule Zapp.NewslettersTest do
       assert Enum.at(reloaded_issue.sections, 0).tweet_section.body == "first"
       assert Enum.at(reloaded_issue.sections, 2).tweet_section.body == "second"
       assert Enum.at(reloaded_issue.sections, 1).tweet_section.body == "Hi there"
+    end
+  end
+
+  describe "heading_sections" do
+    alias Zapp.Newsletters.{Issue, HeadingSection}
+
+    import Zapp.NewslettersFixtures
+    import Zapp.AccountsFixtures
+
+    setup do
+      account = account_fixture()
+      newsletter = newsletter_fixture(account)
+      issue = issue_fixture(newsletter)
+
+      %{issue: issue}
+    end
+
+    test "change_heading_section/2 returns changeset" do
+      changeset = Newsletters.change_heading_section(%HeadingSection{}, %{title: "A new heading"})
+
+      assert changeset.changes.title == "A new heading"
+    end
+
+    test "create_issue_heading_section/3 creates tweet_section with section", %{issue: issue} do
+      heading_section_fixture(issue, 0, %{title: "first"})
+      heading_section_fixture(issue, 1, %{title: "second"})
+
+      {:ok, %HeadingSection{} = heading_section} = Newsletters.create_heading_section(issue, 1, %{title: "A new heading"})
+
+      reloaded_issue = Newsletters.get_issue_with_sections!(issue.id)
+      assert heading_section.section.issue_id == issue.id
+      assert heading_section.section.position == 1
+      assert heading_section.title == "A new heading"
+      assert Enum.at(reloaded_issue.sections, 0).heading_section.title == "first"
+      assert Enum.at(reloaded_issue.sections, 2).heading_section.title == "second"
+      assert Enum.at(reloaded_issue.sections, 1).heading_section.title == "A new heading"
     end
   end
 end

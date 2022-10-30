@@ -22,6 +22,12 @@ defmodule Zapp.NewslettersFixtures do
     })
   end
 
+  def valid_heading_section_attributes(attrs \\ %{}) do
+     Enum.into(attrs, %{
+      title: "My first heading"
+    })
+  end
+
   @doc """
   Generate a newsletter.
   """
@@ -49,5 +55,13 @@ defmodule Zapp.NewslettersFixtures do
     {:ok, tweet_section} = Zapp.Newsletters.create_tweet_section(issue, position, attrs)
 
     tweet_section
+  end
+
+  def heading_section_fixture(issue, position, attrs \\ %{}) do
+    attrs =  valid_heading_section_attributes(attrs)
+
+    {:ok, heading_section} = Zapp.Newsletters.create_heading_section(issue, position, attrs)
+
+    heading_section
   end
 end

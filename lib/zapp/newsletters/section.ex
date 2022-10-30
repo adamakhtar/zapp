@@ -3,13 +3,14 @@ defmodule Zapp.Newsletters.Section do
   import Ecto.Changeset
   import EctoRanked
 
-  alias Zapp.Newsletters.{Issue, TweetSection}
+  alias Zapp.Newsletters.{Issue, TweetSection, HeadingSection}
 
 
   schema "sections" do
     field :rank, :integer
     belongs_to :issue, Issue
     belongs_to :tweet_section, TweetSection
+    belongs_to :heading_section, HeadingSection
     field :position, :any, virtual: true # used by EctoRanked
 
     timestamps()

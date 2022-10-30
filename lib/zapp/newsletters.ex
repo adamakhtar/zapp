@@ -7,7 +7,7 @@ defmodule Zapp.Newsletters do
   alias Zapp.Repo
 
   alias Zapp.Accounts.{Account, User}
-  alias Zapp.Newsletters.{Newsletter, Issue, Section, TweetSection}
+  alias Zapp.Newsletters.{Newsletter, Issue, Section, TweetSection, HeadingSection}
 
   @doc """
   Returns the list of newsletters.
@@ -180,7 +180,7 @@ defmodule Zapp.Newsletters do
     sections_query =
       from s in Section,
       order_by: [asc: s.rank],
-      preload: [:tweet_section]
+      preload: [:tweet_section, :heading_section]
 
     issue_query =
       from i in Issue,
@@ -299,7 +299,7 @@ defmodule Zapp.Newsletters do
 
   ## Tweet Sections
 
-  def change_tweet_section(%Issue{} = issue, %TweetSection{} = tweet_section, attrs \\ %{}) do
+  def change_tweet_section(%TweetSection{} = tweet_section, attrs \\ %{}) do
     tweet_section
     |> TweetSection.changeset(attrs)
   end
@@ -310,8 +310,26 @@ defmodule Zapp.Newsletters do
       %{section: %{ issue_id: issue.id, position: position}}
     )
 
-    issue
-    |> change_tweet_section(%TweetSection{}, tweet_section_attrs)
+    %TweetSection{}
+    |> change_tweet_section(tweet_section_attrs)
+    |> Repo.insert()
+  end
+
+  ## Heading Sections
+
+  def change_heading_section(%HeadingSection{} = heading_section, attrs \\ %{}) do
+    heading_section
+    |> HeadingSection.changeset(attrs)
+  end
+
+  def create_heading_section(%Issue{} = issue, position, heading_section_attrs \\ %{}) do
+    heading_section_attrs = Enum.into(
+      heading_section_attrs,
+      %{section: %{ issue_id: issue.id, position: position}}
+    )
+
+    %HeadingSection{}
+    |> change_heading_section(heading_section_attrs)
     |> Repo.insert()
   end
 
