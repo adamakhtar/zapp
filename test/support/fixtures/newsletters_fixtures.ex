@@ -28,6 +28,12 @@ defmodule Zapp.NewslettersFixtures do
     })
   end
 
+  def valid_text_section_attributes(attrs \\ %{}) do
+     Enum.into(attrs, %{
+      body: "My first text"
+    })
+  end
+
   @doc """
   Generate a newsletter.
   """
@@ -63,5 +69,13 @@ defmodule Zapp.NewslettersFixtures do
     {:ok, heading_section} = Zapp.Newsletters.create_heading_section(issue, position, attrs)
 
     heading_section
+  end
+
+  def text_section_fixture(issue, position, attrs \\ %{}) do
+    attrs =  valid_text_section_attributes(attrs)
+
+    {:ok, text_section} = Zapp.Newsletters.create_text_section(issue, position, attrs)
+
+    text_section
   end
 end

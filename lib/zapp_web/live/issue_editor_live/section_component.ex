@@ -24,6 +24,12 @@ defmodule ZappWeb.IssueEditorLive.SectionComponent do
           <%= if @section.heading_section do %>
             <h3 class="text-lg mb-4"><%= @section.heading_section.title %></h3>
           <% end %>
+
+          <%= if @section.text_section do %>
+            <div>
+              <%= @section.text_section.body %>
+            </div>
+          <% end %>
         </div>
       </div>
     """

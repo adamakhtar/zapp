@@ -222,7 +222,7 @@ defmodule Zapp.NewslettersTest do
       assert changeset.changes.body == "Hi there"
     end
 
-    test "create_issue_tweet_section/3 creates tweet_section with section", %{issue: issue} do
+    test "create_tweet_section/3 creates tweet_section with section", %{issue: issue} do
       tweet_section_fixture(issue, 0, %{body: "first"})
       tweet_section_fixture(issue, 1, %{body: "second"})
 
@@ -258,7 +258,7 @@ defmodule Zapp.NewslettersTest do
       assert changeset.changes.title == "A new heading"
     end
 
-    test "create_issue_heading_section/3 creates tweet_section with section", %{issue: issue} do
+    test "create_heading_section/3 creates tweet_section with section", %{issue: issue} do
       heading_section_fixture(issue, 0, %{title: "first"})
       heading_section_fixture(issue, 1, %{title: "second"})
 
@@ -271,6 +271,42 @@ defmodule Zapp.NewslettersTest do
       assert Enum.at(reloaded_issue.sections, 0).heading_section.title == "first"
       assert Enum.at(reloaded_issue.sections, 2).heading_section.title == "second"
       assert Enum.at(reloaded_issue.sections, 1).heading_section.title == "A new heading"
+    end
+  end
+
+  describe "text_sections" do
+    alias Zapp.Newsletters.{Issue, TextSection}
+
+    import Zapp.NewslettersFixtures
+    import Zapp.AccountsFixtures
+
+    setup do
+      account = account_fixture()
+      newsletter = newsletter_fixture(account)
+      issue = issue_fixture(newsletter)
+
+      %{issue: issue}
+    end
+
+    test "change_text_section/2 returns changeset" do
+      changeset = Newsletters.change_text_section(%TextSection{}, %{body: "Hello there"})
+
+      assert changeset.changes.body == "Hello there"
+    end
+
+    test "create_text_section/3 creates tweet_section with section", %{issue: issue} do
+      text_section_fixture(issue, 0, %{body: "first"})
+      text_section_fixture(issue, 1, %{body: "second"})
+
+      {:ok, %TextSection{} = text_section} = Newsletters.create_text_section(issue, 1, %{body: "Hello there"})
+
+      reloaded_issue = Newsletters.get_issue_with_sections!(issue.id)
+      assert text_section.section.issue_id == issue.id
+      assert text_section.section.position == 1
+      assert text_section.body == "Hello there"
+      assert Enum.at(reloaded_issue.sections, 0).text_section.body == "first"
+      assert Enum.at(reloaded_issue.sections, 2).text_section.body == "second"
+      assert Enum.at(reloaded_issue.sections, 1).text_section.body == "Hello there"
     end
   end
 end

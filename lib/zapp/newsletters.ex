@@ -7,7 +7,7 @@ defmodule Zapp.Newsletters do
   alias Zapp.Repo
 
   alias Zapp.Accounts.{Account, User}
-  alias Zapp.Newsletters.{Newsletter, Issue, Section, TweetSection, HeadingSection}
+  alias Zapp.Newsletters.{Newsletter, Issue, Section, TweetSection, HeadingSection, TextSection}
 
   @doc """
   Returns the list of newsletters.
@@ -179,10 +179,8 @@ defmodule Zapp.Newsletters do
   def get_issue_with_sections!(id) do
     sections_query =
       from s in Section,
-      # select_merge: %{row_number: over(row_number(), :row_number) },
-      # windows: [row_number:  [partition_by: nil, order_by: [s.rank]]],
       order_by: [asc: s.rank],
-      preload: [:tweet_section, :heading_section]
+      preload: [:tweet_section, :heading_section, :text_section]
 
     issue_query =
       from i in Issue,
@@ -340,6 +338,24 @@ defmodule Zapp.Newsletters do
 
     %HeadingSection{}
     |> change_heading_section(heading_section_attrs)
+    |> Repo.insert()
+  end
+
+  ## Text Sections
+
+  def change_text_section(%TextSection{} = text_section, attrs \\ %{}) do
+    text_section
+    |> TextSection.changeset(attrs)
+  end
+
+  def create_text_section(%Issue{} = issue, position, text_section_attrs \\ %{}) do
+    text_section_attrs = Enum.into(
+      text_section_attrs,
+      %{section: %{ issue_id: issue.id, position: position}}
+    )
+
+    %TextSection{}
+    |> change_text_section(text_section_attrs)
     |> Repo.insert()
   end
 
