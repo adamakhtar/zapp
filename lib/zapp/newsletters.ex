@@ -179,6 +179,8 @@ defmodule Zapp.Newsletters do
   def get_issue_with_sections!(id) do
     sections_query =
       from s in Section,
+      # select_merge: %{row_number: over(row_number(), :row_number) },
+      # windows: [row_number:  [partition_by: nil, order_by: [s.rank]]],
       order_by: [asc: s.rank],
       preload: [:tweet_section, :heading_section]
 
@@ -187,7 +189,9 @@ defmodule Zapp.Newsletters do
         where: i.id == ^id,
         preload: [sections: ^sections_query]
 
-    Repo.one!(issue_query)
+    issue = Repo.one!(issue_query)
+
+    Map.replace(issue, :sections, compute_section_positions(issue.sections))
   end
 
   @doc """
@@ -295,6 +299,12 @@ defmodule Zapp.Newsletters do
   # TODO test / authorise
   def delete_section(section) do
     Repo.delete(section)
+  end
+
+  def compute_section_positions(sections \\ []) do
+    for {section, i} <- Enum.with_index(sections) do
+      %{section | position: i}
+    end
   end
 
   ## Tweet Sections

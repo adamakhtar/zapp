@@ -8,10 +8,10 @@
 
     <%= for section <- @issue.sections do %>
       <%= live_component @socket, ZappWeb.IssueEditorLive.SectionComponent, id: section.id, section: section %>
+      <%= live_component @socket, ZappWeb.IssueEditorLive.SectionCreatorComponent, id: "section-creator-#{section.id}", insert_position: section.position, issue: @issue %>
     <% end %>
-
-
   </div>
+
 
   <div class="bg-gray-200 absolute top-0 right-0 bottom-0 border-l border-gray-200 w-64 bg-white px-2 pt-2">
     <div class="overscroll-contain"

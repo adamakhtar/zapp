@@ -103,7 +103,7 @@ defmodule Zapp.NewslettersTest do
 
     alias Zapp.Newsletters.Section
 
-    test "get_issue_with_sections/1 returns the issue with preloaded sections orderd by rank for given id",
+    test "get_issue_with_sections/1 returns the issue with preloaded sections with positions calculated by rank for given id",
         %{newsletter: newsletter} do
       issue = issue_fixture(newsletter)
       tweet_section_1 = tweet_section_fixture(issue, 0, %{body: "first"})
@@ -117,9 +117,16 @@ defmodule Zapp.NewslettersTest do
       assert fetched_issue.id == issue.id
       assert Enum.count(fetched_issue.sections) == 4
       assert Enum.at(fetched_issue.sections, 0).id == tweet_section_4.section.id
+      assert Enum.at(fetched_issue.sections, 0).position == 0
+
       assert Enum.at(fetched_issue.sections, 1).id == tweet_section_1.section.id
+      assert Enum.at(fetched_issue.sections, 1).position == 1
+
       assert Enum.at(fetched_issue.sections, 2).id == tweet_section_2.section.id
+      assert Enum.at(fetched_issue.sections, 2).position == 2
+
       assert Enum.at(fetched_issue.sections, 3).id == tweet_section_3.section.id
+      assert Enum.at(fetched_issue.sections, 3).position == 3
     end
 
     test "create_issue/1 with valid data creates a issue", %{newsletter: newsletter} do
