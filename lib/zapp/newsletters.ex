@@ -359,6 +359,17 @@ defmodule Zapp.Newsletters do
     |> Repo.insert()
   end
 
+  def update_text_section(%TextSection{} = text_section, text_section_attrs) do
+    # TODO - ensure no spoofing of section_id
+    # TODO - authorisation
+
+    text_section
+    |> change_text_section(text_section_attrs)
+    |> Repo.update
+  end
+
+
+
   ## POLICIES
 
   def can?(%User{}, :index, Newsletter) do

@@ -9,7 +9,7 @@
     <%= live_component @socket, ZappWeb.IssueEditorLive.SectionCreatorComponent, id: "section-creator-0", insert_position: 0, issue: @issue %>
 
     <%= for section <- @issue.sections do %>
-      <%= live_component @socket, ZappWeb.IssueEditorLive.SectionComponent, id: section.id, section: section %>
+      <%= live_component @socket, ZappWeb.IssueEditorLive.SectionComponent, id: "section-#{section.id}", section: section %>
       <%= live_component @socket, ZappWeb.IssueEditorLive.SectionCreatorComponent, id: "section-creator-#{section.id}", insert_position: (section.position + 1), issue: @issue %>
     <% end %>
   </div>

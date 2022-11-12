@@ -86,4 +86,14 @@ defmodule ZappWeb.IssueEditorLive.Show do
      |> assign(issue: issue)
     }
   end
+
+  @impl true
+  def handle_info({:text_section_updated, section}, socket) do
+    issue = Newsletters.get_issue_with_sections!(socket.assigns.issue.id)
+
+    {:noreply,
+     socket
+     |> assign(issue: issue)
+    }
+  end
 end

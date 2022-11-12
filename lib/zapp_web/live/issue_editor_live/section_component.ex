@@ -3,6 +3,8 @@ defmodule ZappWeb.IssueEditorLive.SectionComponent do
 
   alias Zapp.Newsletters
 
+  alias ZappWeb.IssueEditorLive.TextSectionComponent
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -26,9 +28,13 @@ defmodule ZappWeb.IssueEditorLive.SectionComponent do
           <% end %>
 
           <%= if @section.text_section do %>
-            <div>
-              <%= @section.text_section.body %>
-            </div>
+            <.live_component
+                module={TextSectionComponent}
+                id={ "#{@id}-text-section" }
+                section={@section}
+                text_section={@section.text_section}
+            />
+
           <% end %>
         </div>
       </div>
