@@ -1,20 +1,29 @@
 defmodule ZappWeb.IssueEditorLive.SectionCreatorComponent do
   use ZappWeb, :live_component
 
+  alias Phoenix.LiveView.JS
+
   alias Zapp.Newsletters
 
   @impl true
   def render(assigns) do
     ~H"""
-      <div x-data="{ open: false }" class="h-4 my-4">
+      <div id={@id}
+           class="h-4 my-4">
         <a href="#"
-           class="border border-gray-400 text-gray-600 rounded-full px-1 py-1"
-           x-show="!open"
-           x-on:click="open = true">+</a>
+            phx-click={ show_menu(assigns) } }
+           class="border border-gray-400 text-gray-600 rounded-full px-1 py-1">+</a>
 
-        <div x-show="open" x-on:click.outside="open = false" class="flex flex-row justify-center">
-          <a href="#" class="text-xs border border-gray-400 text-gray-600 rounded-full px-1 py-1" phx-click="create_heading_section" phx-target={@myself}>+ Heading</a>
-          <a href="#" class="text-xs border border-gray-400 text-gray-600 rounded-full px-1 py-1" phx-click="create_text_section" phx-target={@myself}>+ Text</a>
+        <div phx-click-away={ hide_menu(assigns) }
+             class="js-menu flex flex-row justify-center hidden">
+          <a href="#"
+             class="text-xs border border-gray-400 text-gray-600 rounded-full px-1 py-1"
+             phx-click={ click_create_section(assigns, "create_heading_section") }
+             >+ Heading</a>
+          <a href="#"
+             class="text-xs border border-gray-400 text-gray-600 rounded-full px-1 py-1"
+             phx-click={ click_create_section(assigns, "create_text_section") }
+             >+ Text</a>
           <a href="#" class="text-xs border border-gray-400 text-gray-600 rounded-full px-1 py-1" phx-click="" phx-target={@myself}>+ Tweet</a>
         </div>
       </div>
@@ -24,6 +33,24 @@ defmodule ZappWeb.IssueEditorLive.SectionCreatorComponent do
   @impl true
   def update(assigns, socket) do
     {:ok, socket |> assign(assigns)}
+  end
+
+  def show_menu(assigns) do
+    JS.show(to: "##{assigns.id} .js-menu")
+  end
+
+  def hide_menu(assigns) do
+    JS.hide(to: "##{assigns.id} .js-menu")
+  end
+
+  def click_create_section(assigns, "create_heading_section") do
+    JS.push("create_heading_section", target: assigns.myself)
+    |> JS.hide(to: "##{assigns.id} .js-menu")
+  end
+
+  def click_create_section(assigns, "create_text_section") do
+    JS.push("create_text_section", target: assigns.myself)
+    |> JS.hide(to: "##{assigns.id} .js-menu")
   end
 
   @impl true
