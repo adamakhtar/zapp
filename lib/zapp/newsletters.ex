@@ -341,6 +341,15 @@ defmodule Zapp.Newsletters do
     |> Repo.insert()
   end
 
+  def update_heading_section(%HeadingSection{} = heading_section, heading_section_attrs) do
+    # TODO - ensure no spoofing of section_id
+    # TODO - authorisation
+
+    heading_section
+    |> change_heading_section(heading_section_attrs)
+    |> Repo.update
+  end
+
   ## Text Sections
 
   def change_text_section(%TextSection{} = text_section, attrs \\ %{}) do

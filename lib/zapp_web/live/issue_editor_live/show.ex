@@ -49,6 +49,7 @@ defmodule ZappWeb.IssueEditorLive.Show do
 
   @impl true
   def handle_event("section_moved", %{"section_id" => section_id, "position" => position}, socket) do
+    IO.inspect("SECTION ID: #{section_id}")
     prepared_attrs = %{
       section_id: String.to_integer(section_id),
       position: position
@@ -89,6 +90,16 @@ defmodule ZappWeb.IssueEditorLive.Show do
 
   @impl true
   def handle_info({:text_section_updated, section}, socket) do
+    issue = Newsletters.get_issue_with_sections!(socket.assigns.issue.id)
+
+    {:noreply,
+     socket
+     |> assign(issue: issue)
+    }
+  end
+
+  @impl true
+  def handle_info({:heading_section_updated, section}, socket) do
     issue = Newsletters.get_issue_with_sections!(socket.assigns.issue.id)
 
     {:noreply,

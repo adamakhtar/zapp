@@ -3,14 +3,18 @@ defmodule ZappWeb.IssueEditorLive.SectionComponent do
 
   alias Zapp.Newsletters
 
-  alias ZappWeb.IssueEditorLive.TextSectionComponent
+  alias ZappWeb.IssueEditorLive.{
+    TextSectionComponent,
+    HeadingSectionComponent
+  }
 
   @impl true
   def render(assigns) do
     ~H"""
       <div draggable="true"
            id={"#{@id}"}
-           class="js-draggable mb-4">
+           class="js-draggable mb-4"
+            data-section-id={@section.id}>
         <div class="border border-gray-200 py-3 px-4 text-sm">
           <div class="flex flex-row justify-end py-1 border-b border-gray-200">
             <a href="#"
@@ -24,7 +28,12 @@ defmodule ZappWeb.IssueEditorLive.SectionComponent do
           <% end %>
 
           <%= if @section.heading_section do %>
-            <h3 class="text-lg mb-4"><%= @section.heading_section.title %></h3>
+            <.live_component
+                module={HeadingSectionComponent}
+                id={ "#{@id}-heading-section" }
+                section={@section}
+                heading_section={@section.heading_section}
+            />
           <% end %>
 
           <%= if @section.text_section do %>
@@ -34,7 +43,6 @@ defmodule ZappWeb.IssueEditorLive.SectionComponent do
                 section={@section}
                 text_section={@section.text_section}
             />
-
           <% end %>
         </div>
       </div>

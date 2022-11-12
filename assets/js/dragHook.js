@@ -42,7 +42,7 @@ export default {
         },
         onUpdate: function(evt) {
           hook.pushEvent('section_moved', {
-            section_id: evt.item.id, // id of the moved section
+            section_id: evt.item.getAttribute('data-section-id'), // id of the moved section
             position: evt.newDraggableIndex, // index where the section was dropped
           })
         },
