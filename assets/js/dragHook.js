@@ -49,7 +49,9 @@ export default {
         draggable: '.js-draggable',
         ghostClass: 'bg-yellow-400',
         chosenClass: 'bg-purple-400',
-        dragClass: 'bg-blue-300'
+        dragClass: 'bg-blue-300',
+        filter: 'input, textarea', //See https://github.com/SortableJS/Sortable/issues/972#issuecomment-280253000
+        preventOnFilter: false,
       });
   }
 };
