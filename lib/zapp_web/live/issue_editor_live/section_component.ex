@@ -28,21 +28,25 @@ defmodule ZappWeb.IssueEditorLive.SectionComponent do
           <% end %>
 
           <%= if @section.heading_section do %>
-            <.live_component
-                module={HeadingSectionComponent}
-                id={ "#{@id}-heading-section" }
-                section={@section}
-                heading_section={@section.heading_section}
-            />
+            <%= live_component(
+                  @socket,
+                  ZappWeb.IssueEditorLive.HeadingSectionComponent,
+                  id: "#{@id}-heading-section",
+                  section: @section,
+                  heading_section: @section.heading_section
+                )
+            %>
           <% end %>
 
           <%= if @section.text_section do %>
-            <.live_component
-                module={TextSectionComponent}
-                id={ "#{@id}-text-section" }
-                section={@section}
-                text_section={@section.text_section}
-            />
+            <%= live_component(
+                  @socket,
+                  ZappWeb.IssueEditorLive.TextSectionComponent,
+                  id: "#{@id}-text-section",
+                  section: @section,
+                  text_section: @section.text_section
+                )
+            %>
           <% end %>
         </div>
       </div>

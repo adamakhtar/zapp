@@ -15,7 +15,7 @@ defmodule ZappWeb.IssueEditorLive.HeadingSectionComponent do
           <h3 class="text-lg mb-4"><%= @heading_section.title %></h3>
         </div>
 
-        <div phx-click-away={toggle_form(@id) } class="hidden js-form">
+        <div class="hidden js-form">
           <.form
             let={f}
             id={ "#{@id}-form" }
@@ -63,6 +63,7 @@ defmodule ZappWeb.IssueEditorLive.HeadingSectionComponent do
         |> Newsletters.update_heading_section(heading_section_params)
 
     send self(), {:heading_section_updated, heading_section}
+
     {:noreply, socket}
   end
 end

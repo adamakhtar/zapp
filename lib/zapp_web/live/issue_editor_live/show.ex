@@ -15,6 +15,7 @@ defmodule ZappWeb.IssueEditorLive.Show do
     socket
     |> assign(:page_title, "Edit Issue")
     |> assign(:issue, issue)
+    |> assign(:sections, issue.sections)
     |> assign(:tweets, tweets)
     |> assign(:dropzone, [])
     }
@@ -39,6 +40,7 @@ defmodule ZappWeb.IssueEditorLive.Show do
         {:noreply,
          socket
          |> assign(issue: issue)
+         |> assign(sections: issue.sections)
         }
 
       {:error, _} ->
@@ -61,6 +63,7 @@ defmodule ZappWeb.IssueEditorLive.Show do
         {:noreply,
          socket
          |> assign(issue: issue)
+         |> assign(sections: issue.sections)
         }
 
       {:error, _} ->
@@ -75,6 +78,7 @@ defmodule ZappWeb.IssueEditorLive.Show do
     {:noreply,
      socket
      |> assign(issue: issue)
+     |> assign(sections: issue.sections)
     }
   end
 
@@ -85,6 +89,7 @@ defmodule ZappWeb.IssueEditorLive.Show do
     {:noreply,
      socket
      |> assign(issue: issue)
+     |> assign(sections: issue.sections)
     }
   end
 
@@ -95,6 +100,7 @@ defmodule ZappWeb.IssueEditorLive.Show do
     {:noreply,
      socket
      |> assign(issue: issue)
+     |> assign(sections: issue.sections)
     }
   end
 
@@ -105,6 +111,7 @@ defmodule ZappWeb.IssueEditorLive.Show do
     {:noreply,
      socket
      |> assign(issue: issue)
+     |> assign(sections: issue.sections)
     }
   end
 end
