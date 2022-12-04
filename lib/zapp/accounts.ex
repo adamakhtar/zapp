@@ -8,7 +8,7 @@ defmodule Zapp.Accounts do
   alias Zapp.Repo
 
 
-  alias Zapp.Accounts.{Account, User, Identity, IdentityToken, IdentityNotifier}
+  alias Zapp.Accounts.{Account, User, Identity, IdentityToken, IdentityNotifier, OauthCredential}
 
   def get_user_with_account_by_identity!(%Identity{} = identity) do
     query =
@@ -408,5 +408,40 @@ defmodule Zapp.Accounts do
       {:ok, %{identity: identity}} -> {:ok, identity}
       {:error, :identity, changeset, _} -> {:error, changeset}
     end
+  end
+
+  # TODO test
+  def connect_or_update_oauth_account(%User{} = user, attrs) do
+    oauth_credential = get_oauth_credential_for_user(user)
+
+    if oauth_credential do
+      update_oauth_credential(oauth_credential, attrs)
+    else
+      create_oauth_credentials(user, attrs)
+    end
+  end
+
+  # TODO test
+  def get_oauth_credential_for_user(%User{} = user) do
+    query =
+      from o in OauthCredential,
+        where: o.user_id == ^user.id
+    Repo.one(query)
+  end
+
+  # TODO test
+  def update_oauth_credential(%OauthCredential{} = oauth_credential, attrs) do
+    oauth_credential
+    |> OauthCredential.changeset(attrs)
+    |> Repo.update()
+  end
+
+  # TODO test
+  def create_oauth_credentials(%User{} = user, attrs \\ %{}) do
+    attrs = Enum.into(attrs, %{user_id: user.id})
+
+    %OauthCredential{}
+    |> OauthCredential.changeset(attrs)
+    |> Repo.insert()
   end
 end

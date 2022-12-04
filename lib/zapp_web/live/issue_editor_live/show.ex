@@ -1,16 +1,59 @@
 defmodule ZappWeb.IssueEditorLive.Show do
   use ZappWeb, :live_view
 
+  alias Zapp.Accounts
   alias Zapp.Newsletters
   alias Zapp.Library
   alias Zapp.IssueEditor
+
+  def render(assigns) do
+    ~H"""
+      <div class="w-full h-full relative" phx-hook="Drag" id="drag">
+
+        <h1>Edit Issue</h1>
+        <h3><%= @issue.title %></h3>
+
+        <div class="content h-full w-64 border border-gray-200"
+             data-dropzone="issue">
+
+          <%= live_component @socket, ZappWeb.IssueEditorLive.SectionCreatorComponent, id: "section-creator-0", insert_position: 0, issue: @issue %>
+
+          <%= for section <- @sections do %>
+            <%= live_component @socket, ZappWeb.IssueEditorLive.SectionComponent, id: "section-#{section.id}", section: section %>
+            <%= live_component @socket, ZappWeb.IssueEditorLive.SectionCreatorComponent, id: "section-creator-#{section.id}", insert_position: (section.position + 1), issue: @issue %>
+          <% end %>
+        </div>
+
+
+        <div class="bg-gray-200 absolute top-0 right-0 bottom-0 border-l border-gray-200 w-64 bg-white px-2 pt-2">
+          <div class="overscroll-contain"
+               data-dropzone="tweets">
+            <%= if @twitter_credentials do %>
+              <%= for tweet <- @tweets do %>
+                <div draggable="true"
+                     id={"#{tweet.id}"}
+                     class="js-draggable w-full min-h-32 bg-white border border-gray-200 rounded-lg mb-2 px-3 py-2 text-sm">
+                   <%= tweet.body %>
+                </div>
+              <% end %>
+            <% else %>
+              <%= link "Connect Twitter", to: Routes.oauth_path(@socket, :request, "twitter") %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    """
+  end
 
   @impl true
   def mount(%{"id" => id} = _params, _session, socket) do
     # TODO - authorise
     issue = Newsletters.get_issue_with_sections!(id)
+    twitter_credentials = Accounts.get_oauth_credential_for_user(socket.assigns.current_user)
     tweets = Library.list_tweets()
 
+    IO.inspect("twitter_credentials")
+    IO.inspect(twitter_credentials)
     {:ok,
     socket
     |> assign(:page_title, "Edit Issue")
@@ -18,6 +61,7 @@ defmodule ZappWeb.IssueEditorLive.Show do
     |> assign(:sections, issue.sections)
     |> assign(:tweets, tweets)
     |> assign(:dropzone, [])
+    |> assign(:twitter_credentials, twitter_credentials)
     }
   end
 

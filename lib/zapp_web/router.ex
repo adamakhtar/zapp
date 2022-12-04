@@ -80,6 +80,11 @@ defmodule ZappWeb.Router do
     put "/identities/settings", IdentitySettingsController, :update
     get "/identities/settings/confirm_email/:token", IdentitySettingsController, :confirm_email
 
+
+    ## Uberauth OAuth
+    get "/auth/:provider", OauthController, :request
+    get "/auth/:provider/callback", OauthController, :callback
+
     live_session :default, on_mount: ZappWeb.LiveAuth do
       live "/issues", IssueLive.Index, :index
       live "/issues/new", IssueLive.Index, :new

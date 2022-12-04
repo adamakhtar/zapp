@@ -1,11 +1,12 @@
 defmodule Zapp.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Zapp.Accounts.{Identity, Account}
+  alias Zapp.Accounts.{Identity, Account, OauthCredential}
 
   schema "users" do
     belongs_to :identity, Identity
     belongs_to :account, Account
+    has_one :oauth_credential, OauthCredential
 
     timestamps()
   end
