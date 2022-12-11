@@ -3,8 +3,8 @@ defmodule ZappWeb.IssueEditorLive.Show do
 
   alias Zapp.Accounts
   alias Zapp.Newsletters
-  alias Zapp.Library
   alias Zapp.IssueEditor
+  alias Zapp.Twitter
 
   def render(assigns) do
     ~H"""
@@ -24,23 +24,14 @@ defmodule ZappWeb.IssueEditorLive.Show do
           <% end %>
         </div>
 
-
-        <div class="bg-gray-200 absolute top-0 right-0 bottom-0 border-l border-gray-200 w-64 bg-white px-2 pt-2">
-          <div class="overscroll-contain"
-               data-dropzone="tweets">
-            <%= if @twitter_credentials do %>
-              <%= for tweet <- @tweets do %>
-                <div draggable="true"
-                     id={"#{tweet.id}"}
-                     class="js-draggable w-full min-h-32 bg-white border border-gray-200 rounded-lg mb-2 px-3 py-2 text-sm">
-                   <%= tweet.body %>
-                </div>
-              <% end %>
-            <% else %>
-              <%= link "Connect Twitter", to: Routes.oauth_path(@socket, :request, "twitter") %>
-            <% end %>
-          </div>
-        </div>
+        <%= live_component(
+          @socket,
+          ZappWeb.IssueEditorLive.SidebarComponent,
+          id: "sidebar",
+          current_account: @current_account,
+          issue: @issue,
+          twitter_credentials: @twitter_credentials
+        ) %>
       </div>
     """
   end
@@ -48,18 +39,14 @@ defmodule ZappWeb.IssueEditorLive.Show do
   @impl true
   def mount(%{"id" => id} = _params, _session, socket) do
     # TODO - authorise
-    issue = Newsletters.get_issue_with_sections!(id)
     twitter_credentials = Accounts.get_oauth_credential_for_user(socket.assigns.current_user)
-    tweets = Library.list_tweets()
+    issue = Newsletters.get_issue_with_sections!(id)
 
-    IO.inspect("twitter_credentials")
-    IO.inspect(twitter_credentials)
     {:ok,
     socket
     |> assign(:page_title, "Edit Issue")
     |> assign(:issue, issue)
     |> assign(:sections, issue.sections)
-    |> assign(:tweets, tweets)
     |> assign(:dropzone, [])
     |> assign(:twitter_credentials, twitter_credentials)
     }
@@ -87,7 +74,7 @@ defmodule ZappWeb.IssueEditorLive.Show do
          |> assign(sections: issue.sections)
         }
 
-      {:error, _} ->
+      {:error, result} ->
         # TODO
     end
   end
@@ -95,7 +82,6 @@ defmodule ZappWeb.IssueEditorLive.Show do
 
   @impl true
   def handle_event("section_moved", %{"section_id" => section_id, "position" => position}, socket) do
-    IO.inspect("SECTION ID: #{section_id}")
     prepared_attrs = %{
       section_id: String.to_integer(section_id),
       position: position

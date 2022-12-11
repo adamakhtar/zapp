@@ -36,7 +36,7 @@ export default {
         },
         onAdd: function(evt) {
           hook.pushEvent('tweet_dropped', {
-            tweet_id: evt.item.id, // id of the dragged item
+            tweet_id: evt.item.dataset.tweetId, // id of the dragged item
             position: evt.newDraggableIndex, // index where the item was dropped
           })
         },

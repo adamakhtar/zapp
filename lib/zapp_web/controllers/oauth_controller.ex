@@ -10,6 +10,7 @@ defmodule ZappWeb.OauthController do
     case Accounts.connect_or_update_oauth_account(
       conn.assigns.current_user,
       %{
+        service_id: conn.assigns.ueberauth_auth.uid,
         token: conn.assigns.ueberauth_auth.credentials.token,
         secret: conn.assigns.ueberauth_auth.credentials.secret,
         reference: conn.assigns.ueberauth_auth.info.nickname

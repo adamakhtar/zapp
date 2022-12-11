@@ -180,12 +180,13 @@ defmodule Zapp.Newsletters do
     sections_query =
       from s in Section,
       order_by: [asc: s.rank],
-      preload: [:tweet_section, :heading_section, :text_section]
+      preload: [:heading_section, :text_section, tweet_section: [:tweet_section_medias]]
 
     issue_query =
       from i in Issue,
         where: i.id == ^id,
-        preload: [sections: ^sections_query]
+        preload: [sections: ^sections_query],
+        preload: :newsletter
 
     issue = Repo.one!(issue_query)
 

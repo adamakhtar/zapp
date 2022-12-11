@@ -2,12 +2,12 @@ defmodule Zapp.Newsletters.Issue do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Zapp.Newsletters.Section
+  alias Zapp.Newsletters.{Section, Newsletter}
 
   schema "issues" do
     field :title, :string
     field :account_id, :id
-    field :newsletter_id, :id
+    belongs_to :newsletter, Newsletter
 
     has_many :sections, Section
 

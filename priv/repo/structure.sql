@@ -65,6 +65,37 @@ ALTER SEQUENCE public.accounts_id_seq OWNED BY public.accounts.id;
 
 
 --
+-- Name: heading_sections; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.heading_sections (
+    id bigint NOT NULL,
+    title character varying(255),
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL
+);
+
+
+--
+-- Name: heading_sections_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.heading_sections_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: heading_sections_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.heading_sections_id_seq OWNED BY public.heading_sections.id;
+
+
+--
 -- Name: identities; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -164,6 +195,40 @@ ALTER SEQUENCE public.issues_id_seq OWNED BY public.issues.id;
 
 
 --
+-- Name: lists; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.lists (
+    id bigint NOT NULL,
+    name character varying(255),
+    twitter_id bigint,
+    account_id bigint,
+    newsletter_id bigint,
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL
+);
+
+
+--
+-- Name: lists_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.lists_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: lists_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.lists_id_seq OWNED BY public.lists.id;
+
+
+--
 -- Name: newsletters; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -196,6 +261,41 @@ ALTER SEQUENCE public.newsletters_id_seq OWNED BY public.newsletters.id;
 
 
 --
+-- Name: oauth_credentials; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.oauth_credentials (
+    id bigint NOT NULL,
+    token character varying(255),
+    secret character varying(255),
+    reference character varying(255),
+    user_id bigint,
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL,
+    service_id character varying(255)
+);
+
+
+--
+-- Name: oauth_credentials_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.oauth_credentials_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: oauth_credentials_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.oauth_credentials_id_seq OWNED BY public.oauth_credentials.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -211,11 +311,13 @@ CREATE TABLE public.schema_migrations (
 
 CREATE TABLE public.sections (
     id bigint NOT NULL,
-    "position" integer NOT NULL,
+    rank integer NOT NULL,
     issue_id bigint,
     tweet_section_id bigint,
     inserted_at timestamp(0) without time zone NOT NULL,
-    updated_at timestamp(0) without time zone NOT NULL
+    updated_at timestamp(0) without time zone NOT NULL,
+    heading_section_id bigint,
+    text_section_id bigint
 );
 
 
@@ -239,6 +341,37 @@ ALTER SEQUENCE public.sections_id_seq OWNED BY public.sections.id;
 
 
 --
+-- Name: text_sections; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.text_sections (
+    id bigint NOT NULL,
+    body character varying(255),
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL
+);
+
+
+--
+-- Name: text_sections_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.text_sections_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: text_sections_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.text_sections_id_seq OWNED BY public.text_sections.id;
+
+
+--
 -- Name: tweet_sections; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -246,8 +379,7 @@ CREATE TABLE public.tweet_sections (
     id bigint NOT NULL,
     body text,
     inserted_at timestamp(0) without time zone NOT NULL,
-    updated_at timestamp(0) without time zone NOT NULL,
-    section_id bigint
+    updated_at timestamp(0) without time zone NOT NULL
 );
 
 
@@ -310,6 +442,13 @@ ALTER TABLE ONLY public.accounts ALTER COLUMN id SET DEFAULT nextval('public.acc
 
 
 --
+-- Name: heading_sections id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.heading_sections ALTER COLUMN id SET DEFAULT nextval('public.heading_sections_id_seq'::regclass);
+
+
+--
 -- Name: identities id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -331,6 +470,13 @@ ALTER TABLE ONLY public.issues ALTER COLUMN id SET DEFAULT nextval('public.issue
 
 
 --
+-- Name: lists id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.lists ALTER COLUMN id SET DEFAULT nextval('public.lists_id_seq'::regclass);
+
+
+--
 -- Name: newsletters id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -338,10 +484,24 @@ ALTER TABLE ONLY public.newsletters ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: oauth_credentials id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.oauth_credentials ALTER COLUMN id SET DEFAULT nextval('public.oauth_credentials_id_seq'::regclass);
+
+
+--
 -- Name: sections id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.sections ALTER COLUMN id SET DEFAULT nextval('public.sections_id_seq'::regclass);
+
+
+--
+-- Name: text_sections id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.text_sections ALTER COLUMN id SET DEFAULT nextval('public.text_sections_id_seq'::regclass);
 
 
 --
@@ -364,6 +524,14 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 ALTER TABLE ONLY public.accounts
     ADD CONSTRAINT accounts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: heading_sections heading_sections_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.heading_sections
+    ADD CONSTRAINT heading_sections_pkey PRIMARY KEY (id);
 
 
 --
@@ -391,11 +559,27 @@ ALTER TABLE ONLY public.issues
 
 
 --
+-- Name: lists lists_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.lists
+    ADD CONSTRAINT lists_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: newsletters newsletters_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.newsletters
     ADD CONSTRAINT newsletters_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: oauth_credentials oauth_credentials_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.oauth_credentials
+    ADD CONSTRAINT oauth_credentials_pkey PRIMARY KEY (id);
 
 
 --
@@ -412,6 +596,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 ALTER TABLE ONLY public.sections
     ADD CONSTRAINT sections_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: text_sections text_sections_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.text_sections
+    ADD CONSTRAINT text_sections_pkey PRIMARY KEY (id);
 
 
 --
@@ -466,10 +658,31 @@ CREATE INDEX issues_newsletter_id_index ON public.issues USING btree (newsletter
 
 
 --
+-- Name: lists_account_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX lists_account_id_index ON public.lists USING btree (account_id);
+
+
+--
+-- Name: lists_newsletter_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX lists_newsletter_id_index ON public.lists USING btree (newsletter_id);
+
+
+--
 -- Name: newsletters_account_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX newsletters_account_id_index ON public.newsletters USING btree (account_id);
+
+
+--
+-- Name: oauth_credentials_user_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX oauth_credentials_user_id_index ON public.oauth_credentials USING btree (user_id);
 
 
 --
@@ -518,11 +731,43 @@ ALTER TABLE ONLY public.issues
 
 
 --
+-- Name: lists lists_account_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.lists
+    ADD CONSTRAINT lists_account_id_fkey FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+
+
+--
+-- Name: lists lists_newsletter_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.lists
+    ADD CONSTRAINT lists_newsletter_id_fkey FOREIGN KEY (newsletter_id) REFERENCES public.newsletters(id);
+
+
+--
 -- Name: newsletters newsletters_account_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.newsletters
     ADD CONSTRAINT newsletters_account_id_fkey FOREIGN KEY (account_id) REFERENCES public.accounts(id);
+
+
+--
+-- Name: oauth_credentials oauth_credentials_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.oauth_credentials
+    ADD CONSTRAINT oauth_credentials_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: sections sections_heading_section_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sections
+    ADD CONSTRAINT sections_heading_section_id_fkey FOREIGN KEY (heading_section_id) REFERENCES public.heading_sections(id);
 
 
 --
@@ -534,19 +779,19 @@ ALTER TABLE ONLY public.sections
 
 
 --
+-- Name: sections sections_text_section_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sections
+    ADD CONSTRAINT sections_text_section_id_fkey FOREIGN KEY (text_section_id) REFERENCES public.text_sections(id);
+
+
+--
 -- Name: sections sections_tweet_section_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.sections
     ADD CONSTRAINT sections_tweet_section_id_fkey FOREIGN KEY (tweet_section_id) REFERENCES public.tweet_sections(id);
-
-
---
--- Name: tweet_sections tweet_sections_section_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.tweet_sections
-    ADD CONSTRAINT tweet_sections_section_id_fkey FOREIGN KEY (section_id) REFERENCES public.sections(id);
 
 
 --
@@ -577,3 +822,11 @@ INSERT INTO public."schema_migrations" (version) VALUES (20221022132809);
 INSERT INTO public."schema_migrations" (version) VALUES (20221026110858);
 INSERT INTO public."schema_migrations" (version) VALUES (20221029082907);
 INSERT INTO public."schema_migrations" (version) VALUES (20221029083621);
+INSERT INTO public."schema_migrations" (version) VALUES (20221029112601);
+INSERT INTO public."schema_migrations" (version) VALUES (20221030125452);
+INSERT INTO public."schema_migrations" (version) VALUES (20221030125522);
+INSERT INTO public."schema_migrations" (version) VALUES (20221031122350);
+INSERT INTO public."schema_migrations" (version) VALUES (20221031122358);
+INSERT INTO public."schema_migrations" (version) VALUES (20221127075721);
+INSERT INTO public."schema_migrations" (version) VALUES (20221204043058);
+INSERT INTO public."schema_migrations" (version) VALUES (20221204062727);

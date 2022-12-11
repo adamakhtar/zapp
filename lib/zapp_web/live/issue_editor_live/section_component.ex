@@ -24,7 +24,18 @@ defmodule ZappWeb.IssueEditorLive.SectionComponent do
           </div>
 
           <%= if @section.tweet_section do %>
-            <%= @section.tweet_section.body %>
+            <img src={ @section.tweet_section.user_profile_image_url}/>
+            @<%= @section.tweet_section.user_screen_name %>
+            <%= @section.tweet_section.text %>
+
+            <%= if @section.tweet_section.tweet_section_medias do %>
+              <%= for media <- @section.tweet_section.tweet_section_medias do %>
+                <img src={ media.url }>
+              <% end %>
+            <% end %>
+
+            <%= @section.tweet_section.retweet_count %>
+            <%= @section.tweet_section.favorite_count %>
           <% end %>
 
           <%= if @section.heading_section do %>
