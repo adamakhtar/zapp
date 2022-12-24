@@ -29,7 +29,7 @@ defmodule Zapp.Twitter.Client do
     ])
   end
 
-  def get_tweet(tweet_id, opts \\ []) do
+  def get_tweet(tweet_id, _opts \\ []) do
     ExTwitter.lookup_status(tweet_id, include_entitites: true)
     |> Enum.at(0)
     |> parse_tweet()

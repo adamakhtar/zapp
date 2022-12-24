@@ -59,7 +59,13 @@ defmodule Zapp.Twitter do
       ** (Ecto.NoResultsError)
 
   """
-  def get_list!(id), do: Repo.get!(List, id)
+  def get_list(account_id, id) do
+    Repo.one(
+      from l in List,
+        where: l.account_id == ^account_id,
+        where: l.id == ^id
+    )
+  end
 
   def get_list_by_twitter_id(twitter_list_id) do
     Repo.one(from l in List, where: l.twitter_id == ^twitter_list_id)
