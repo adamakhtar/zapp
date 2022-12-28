@@ -26,8 +26,9 @@ import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 import Alpine from 'alpinejs'
 import Drag from './dragHook'
+import HeadingSection from './heading_section_hook'
 
-const Hooks = { Drag: Drag };
+const Hooks = { Drag: Drag, HeadingSection: HeadingSection };
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket(
@@ -40,6 +41,15 @@ let liveSocket = new LiveSocket(
       onBeforeElUpdated(from, to) {
         if (from._x_dataStack) {
           window.Alpine.clone(from, to)
+        }
+      }
+    },
+    metadata: {
+      keydown: (e, el) => {
+        return {
+          key: e.key,
+          metaKey: e.metaKey,
+          repeat: e.repeat
         }
       }
     }
@@ -63,5 +73,23 @@ window.liveSocket = liveSocket
 
 window.Alpine = Alpine
 Alpine.start()
+
+
+
+// window.addEventListener("textarea:resize_to_fit", e => {
+//   e.target.style.height = 'auto';
+//   e.target.style.height = e.target.scrollHeight + 'px';
+// })
+
+// window.addEventListener("textarea:enter_to_submit", e => {
+//   console.log("HEY")
+
+//   if (e.keyCode == 13) {
+//     console.log("ENTER")
+//     e.preventDefault();
+//     e.target.closest("form").submit();
+//   }
+// })
+
 
 

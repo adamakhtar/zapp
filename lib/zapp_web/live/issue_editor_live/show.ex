@@ -9,29 +9,33 @@ defmodule ZappWeb.IssueEditorLive.Show do
   def render(assigns) do
     ~H"""
       <div class="w-full h-full relative" phx-hook="Drag" id="drag">
+        <div class="flex flex-row justify-center">
+          <div class="max-w-2xl flex-grow mt-16">
+            <header class="h-64 w-full bg-blue-800 flex flex-col justify-center">
+              <h1 class="text-4xl font-medium text-center text-white"><%= @issue.title %></h1>
+            </header>
 
-        <h1>Edit Issue</h1>
-        <h3><%= @issue.title %></h3>
+            <div class="content h-full border border-gray-200 px-8 py-6"
+                 data-dropzone="issue">
 
-        <div class="content h-full w-64 border border-gray-200"
-             data-dropzone="issue">
+              <%= live_component @socket, ZappWeb.IssueEditorLive.SectionCreatorComponent, id: "section-creator-0", insert_position: 0, issue: @issue %>
 
-          <%= live_component @socket, ZappWeb.IssueEditorLive.SectionCreatorComponent, id: "section-creator-0", insert_position: 0, issue: @issue %>
+              <%= for section <- @sections do %>
+                <%= live_component @socket, ZappWeb.IssueEditorLive.SectionComponent, id: "section-#{section.id}", section: section %>
+                <%= live_component @socket, ZappWeb.IssueEditorLive.SectionCreatorComponent, id: "section-creator-#{section.id}", insert_position: (section.position + 1), issue: @issue %>
+              <% end %>
+            </div>
 
-          <%= for section <- @sections do %>
-            <%= live_component @socket, ZappWeb.IssueEditorLive.SectionComponent, id: "section-#{section.id}", section: section %>
-            <%= live_component @socket, ZappWeb.IssueEditorLive.SectionCreatorComponent, id: "section-creator-#{section.id}", insert_position: (section.position + 1), issue: @issue %>
-          <% end %>
+            <%= live_component(
+              @socket,
+              ZappWeb.IssueEditorLive.SidebarComponent,
+              id: "sidebar",
+              current_account: @current_account,
+              issue: @issue,
+              twitter_credentials: @twitter_credentials
+            ) %>
+          </div>
         </div>
-
-        <%= live_component(
-          @socket,
-          ZappWeb.IssueEditorLive.SidebarComponent,
-          id: "sidebar",
-          current_account: @current_account,
-          issue: @issue,
-          twitter_credentials: @twitter_credentials
-        ) %>
       </div>
     """
   end

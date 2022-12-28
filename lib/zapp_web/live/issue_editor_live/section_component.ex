@@ -13,29 +13,44 @@ defmodule ZappWeb.IssueEditorLive.SectionComponent do
     ~H"""
       <div draggable="true"
            id={"#{@id}"}
-           class="js-draggable mb-4"
+           class="js-draggable group mb-4 hover:cursor-move"
             data-section-id={@section.id}>
-        <div class="border border-gray-200 py-3 px-4 text-sm">
-          <div class="flex flex-row justify-end py-1 border-b border-gray-200">
+        <div class="relative">
+          <div class="opacity-0 group-hover:opacity-100 transition-opacity ease-out absolute -right-3 -top-3 px-1 py-1 bg-white rounded-full border border-gray-300">
             <a href="#"
                class=""
                phx-click="delete"
-               phx-target={@myself}>Delete</a>.
+               phx-target={@myself}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </a>
           </div>
 
           <%= if @section.tweet_section do %>
-            <img src={ @section.tweet_section.user_profile_image_url}/>
-            @<%= @section.tweet_section.user_screen_name %>
-            <%= @section.tweet_section.text %>
+            <div class="flex flex-col rounded-lg border border-gray-300 hover:shadow-sm hover:cursor-move py-3 px-4 text-sm">
+              <header class="flex flex-row justify-left mb-2">
+                <img src={ @section.tweet_section.user_profile_image_url} class="w-12 h-12 rounded-full"/>
 
-            <%= if @section.tweet_section.tweet_section_medias do %>
-              <%= for media <- @section.tweet_section.tweet_section_medias do %>
-                <img src={ media.url }>
+                <div class="flex flex-col justify-center ml-2">
+                  <div class="text-gray-900 text-base font-medium leading-none mb-1"><%= @section.tweet_section.user_name %></div>
+                  <div class="text-gray-600 leading-none mb-0">@<%= @section.tweet_section.user_screen_name %></div>
+                </div>
+              </header>
+
+              <section class="text-base leading-normal">
+                <%= @section.tweet_section.text %>
+              </section>
+
+              <%= if @section.tweet_section.tweet_section_medias do %>
+                <%= for media <- @section.tweet_section.tweet_section_medias do %>
+                  <img src={ media.url }>
+                <% end %>
               <% end %>
-            <% end %>
 
-            <%= @section.tweet_section.retweet_count %>
-            <%= @section.tweet_section.favorite_count %>
+              <%= @section.tweet_section.retweet_count %>
+              <%= @section.tweet_section.favorite_count %>
+            </div>
           <% end %>
 
           <%= if @section.heading_section do %>

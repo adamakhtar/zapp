@@ -10,7 +10,7 @@ defmodule ZappWeb.IssueEditorLive.TextSectionComponent do
   @impl true
   def render(assigns) do
     ~H"""
-      <div id={@id}>
+      <div id={@id} class="rounded-lg border border-white hover:border-gray-300 hover:shadow-sm py-3 px-4">
         <div class="js-title" phx-click={toggle_form(@id)}>
           <%= @text_section.body %>
         </div>
