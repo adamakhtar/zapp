@@ -9,6 +9,8 @@ defmodule ZappWeb.IssueEditorLive.Show do
   def render(assigns) do
     ~H"""
       <div class="w-full h-full relative" phx-hook="Drag" id="drag">
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css">
+
         <div class="flex flex-row justify-center">
           <div class="max-w-2xl flex-grow mt-16">
             <header class="h-64 w-full bg-blue-800 flex flex-col justify-center">

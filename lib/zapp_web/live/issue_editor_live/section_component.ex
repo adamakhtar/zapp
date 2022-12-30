@@ -11,11 +11,21 @@ defmodule ZappWeb.IssueEditorLive.SectionComponent do
   @impl true
   def render(assigns) do
     ~H"""
-      <div draggable="true"
+      <div
            id={"#{@id}"}
-           class="js-draggable group mb-4 hover:cursor-move"
+           class="js-draggable group mb-4"
             data-section-id={@section.id}>
         <div class="relative">
+          <div class="js-handle hover:cursor-grab opacity-0 group-hover:opacity-100 transition-opacity ease-out absolute -left-3 -top-3 px-1 py-1 bg-white rounded-full border border-gray-300">
+            <a href="#"
+               class="block"
+               phx-click="delete"
+               phx-target={@myself}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </a>
+          </div>
           <div class="opacity-0 group-hover:opacity-100 transition-opacity ease-out absolute -right-3 -top-3 px-1 py-1 bg-white rounded-full border border-gray-300">
             <a href="#"
                class=""
@@ -28,7 +38,7 @@ defmodule ZappWeb.IssueEditorLive.SectionComponent do
           </div>
 
           <%= if @section.tweet_section do %>
-            <div class="flex flex-col rounded-lg border border-gray-300 hover:shadow-sm hover:cursor-move py-3 px-4 text-sm">
+            <div class="flex flex-col rounded-lg border border-gray-300 hover:shadow-sm py-3 px-4 text-sm">
               <header class="flex flex-row justify-left mb-2">
                 <img src={ @section.tweet_section.user_profile_image_url} class="w-12 h-12 rounded-full"/>
 

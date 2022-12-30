@@ -11,20 +11,22 @@ defmodule ZappWeb.IssueEditorLive.TextSectionComponent do
   def render(assigns) do
     ~H"""
       <div id={@id} class="rounded-lg border border-white hover:border-gray-300 hover:shadow-sm py-3 px-4">
-        <div class="js-title" phx-click={toggle_form(@id)}>
+        <div class="js-title" phx-click={ toggle_form(@id) }>
           <%= @text_section.body %>
         </div>
 
-        <div phx-click-away={toggle_form(@id) } class="hidden js-form">
+        <div id={ "{#@id}-form"}  class="js-form hidden" phx-update="ignore" phx-click-away={ JS.dispatch("submit", to: "##{@id}-form") }>
           <.form
             let={f}
             id={ "#{@id}-form" }
             for={@changeset}
             phx-target={@myself}
-            phx-submit={on_submit(@id, @myself)}>
-            <%= textarea f, :body %>
+            phx-submit={on_submit(@id, @myself)}
+            >
+            <%= textarea f, :body, hidden: true, id: "#{@id}-trix" %>
+            <trix-editor input={ "#{@id}-trix" }></trix-editor>
 
-            <%= submit "Save" %>
+            <%# dont need save button as phx-click-away will trigger a sumbmit event %>
           </.form>
         </div>
       </div>
