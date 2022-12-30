@@ -24,6 +24,7 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
+import Trix from "trix"
 import Alpine from 'alpinejs'
 import Drag from './dragHook'
 import HeadingSection from './heading_section_hook'
@@ -56,7 +57,6 @@ let liveSocket = new LiveSocket(
   }
 )
 
-
 // Show progress bar on live navigation and form submits
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
 window.addEventListener("phx:page-loading-start", info => topbar.show())
@@ -73,23 +73,5 @@ window.liveSocket = liveSocket
 
 window.Alpine = Alpine
 Alpine.start()
-
-
-
-// window.addEventListener("textarea:resize_to_fit", e => {
-//   e.target.style.height = 'auto';
-//   e.target.style.height = e.target.scrollHeight + 'px';
-// })
-
-// window.addEventListener("textarea:enter_to_submit", e => {
-//   console.log("HEY")
-
-//   if (e.keyCode == 13) {
-//     console.log("ENTER")
-//     e.preventDefault();
-//     e.target.closest("form").submit();
-//   }
-// })
-
 
 
