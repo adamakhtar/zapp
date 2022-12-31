@@ -13,17 +13,15 @@ defmodule ZappWeb.IssueEditorLive.SidebarComponent do
               let={f}
               for={:s}
               phx-change="list_selected"
+              phx-target={@myself}
             >
-              <%= select(f, :current_list_id, Enum.map(@lists, &{&1.name, &1.id}), selected: @current_list.id) %>
+              <%= select(f, :list_id, Enum.map(@lists, &{&1.name, &1.id}), selected: @current_list.id) %>
             </.form>
           </div>
 
           <div class="px-3 py-2 flex-grow overflow-auto overscroll-contain"
                data-dropzone="tweets">
             <%= if @twitter_credentials do %>
-              <%= for _i <- 1..100 do %>
-                <div class="w-full h-64 border border-gray-200 mb-2"></div>
-              <% end %>
               <%= for tweet <- @tweets do %>
                 <div draggable="true"
                      data-tweet-id={"#{tweet.id}"}
@@ -60,12 +58,10 @@ defmodule ZappWeb.IssueEditorLive.SidebarComponent do
     lists = Twitter.list_lists(current_account.id, issue.newsletter_id)
     current_list = List.first(lists)
 
-    # tweets = fetch_list_timeline(
-    #   twitter_credentials.service_id,
-    #   current_list.twitter_id
-    # )
-
-    tweets = []
+    tweets = fetch_list_timeline(
+      twitter_credentials.service_id,
+      current_list.twitter_id
+    )
 
     {:ok,
      socket
@@ -76,24 +72,21 @@ defmodule ZappWeb.IssueEditorLive.SidebarComponent do
     }
   end
 
-  def handle_event("list_selected", params, socket) do
+  def handle_event("list_selected", %{"s" => %{"list_id" => list_id}} = params, socket) do
+    IO.inspect("PARPAMS")
     IO.inspect(params)
-    # IO.inspect(["list_selected", list_id])
-
     # TODO - what happens if there is no longer a list?
-    # current_list = Twitter.get_list(socket.assigns.current_account.id, list_id)
-    # tweets = fetch_list_timeline(
-    #   socket.assigns.twitter_credentials.service_id,
-    #   current_list.twitter_id
-    # )
+    current_list = Twitter.get_list(socket.assigns.current_account.id, list_id)
+    tweets = fetch_list_timeline(
+      socket.assigns.twitter_credentials.service_id,
+      current_list.twitter_id
+    )
 
-    # {:noreply,
-    #  socket
-    #  |> assign(:current_list, current_list)
-    #  |> assign(:tweets, tweets)
-    # }
-
-    {:noreply, socket}
+    {:noreply,
+     socket
+     |> assign(:current_list, current_list)
+     |> assign(:tweets, tweets)
+    }
   end
 
   def handle_event("load_more_tweets", _value, %{assigns: %{tweets: tweets, twitter_credentials: twitter_credentials, current_list: current_list}} = socket) do
