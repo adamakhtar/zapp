@@ -51,13 +51,44 @@ defmodule ZappWeb.IssueEditorLive.SectionComponent do
               </section>
 
               <%= if @section.tweet_section.tweet_section_medias do %>
-                <%= for media <- @section.tweet_section.tweet_section_medias do %>
-                  <img src={ media.url }>
-                <% end %>
+                <div class="mb-2">
+                  <%= for media <- @section.tweet_section.tweet_section_medias do %>
+                    <img src={ media.url }>
+                  <% end %>
+                </div>
               <% end %>
 
-              <%= @section.tweet_section.retweet_count %>
-              <%= @section.tweet_section.favorite_count %>
+              <div class='flex flex-row space-between items-center space-x-4 text-sm text-gray-500'>
+                <div class="flex flex-row items-center">
+                  <svg  class="w-5 h-5 mr-1 block"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
+                  </svg>
+                  <div>
+                    <%= @section.tweet_section.retweet_count %>
+                  </div>
+                </div>
+
+                <div class="flex flex-row items-center">
+                  <svg class="w-5 h-5 mr-1 text-xs block"
+                       xmlns="http://www.w3.org/2000/svg"
+                       fill="none"
+                       viewBox="0 0 24 24"
+                       stroke-width="1.5"
+                       stroke="currentColor"
+                       >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                  </svg>
+                  <div>
+                    <%= @section.tweet_section.favorite_count %>
+                  </div>
+                </div>
+              </div>
             </div>
           <% end %>
 
