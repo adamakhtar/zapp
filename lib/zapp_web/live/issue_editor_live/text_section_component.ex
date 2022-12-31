@@ -11,11 +11,11 @@ defmodule ZappWeb.IssueEditorLive.TextSectionComponent do
   def render(assigns) do
     ~H"""
       <div id={@id} class="rounded-lg border border-white hover:border-gray-300 hover:shadow-sm py-3 px-4">
-        <div class="js-title" phx-click={ toggle_form(@id) }>
-          <%= @text_section.body %>
+        <div class="js-title cursor-pointer" phx-click={ toggle_form(@id) }>
+          <%= raw(@text_section.body) %>
         </div>
 
-        <div id={ "{#@id}-form"}  class="js-form hidden" phx-update="ignore" phx-click-away={ JS.dispatch("submit", to: "##{@id}-form") }>
+        <div id={ "{#@id}-form"}  class="js-form hidden cursor-text" phx-update="ignore">
           <.form
             let={f}
             id={ "#{@id}-form" }

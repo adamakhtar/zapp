@@ -15,25 +15,27 @@ defmodule ZappWeb.IssueEditorLive.HeadingSectionComponent do
           <h2 class="js-heading text-2xl font-semibold leading-tight"><%= @heading_section.title %></h2>
         </div>
 
+        <div phx-click-away={ save(@id) }>
+          <.form
+            let={f}
+            id={ "#{@id}-form" }
+            for={@changeset}
+            phx-target={@myself}
+            phx-submit={on_submit(@id, @myself)}
+            class="hidden js-form"
+            >
+            <%= textarea(
+              f,
+              :title,
+              rows: 1,
+              autofocus: true,
+              height: 'auto',
+              class: "overflow-y-hidden resize-none focus:ring-0  w-full text-2xl font-semibold leading-tight px-0 py-0"
+              ) %>
 
-        <.form
-          let={f}
-          id={ "#{@id}-form" }
-          for={@changeset}
-          phx-target={@myself}
-          phx-submit={on_submit(@id, @myself)}
-          class="hidden js-form"
-          >
-          <%= textarea(
-            f,
-            :title,
-            autofocus: true,
-            height: 'auto',
-            class: "focus:ring-0  w-full text-2xl font-semibold leading-tight px-0 py-0"
-            ) %>
-
-          <% # No submit button required. User can just press enter %>
-        </.form>
+            <% # No submit button required. User can just press enter or click away to submit %>
+          </.form>
+        </div>
       </div>
     """
   end
@@ -54,6 +56,10 @@ defmodule ZappWeb.IssueEditorLive.HeadingSectionComponent do
 
   def reveal_form(id) do
     JS.dispatch("heading_section:reveal_form", to: "##{id}")
+  end
+
+  def save(id) do
+    JS.dispatch("heading_section:save", to: "##{id}")
   end
 
   # def toggle_form(id) do

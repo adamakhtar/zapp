@@ -27,6 +27,7 @@ export default {
       });
 
     new Sortable(issueDropzone, {
+        handle: '.js-handle',
         animation: 150,
         delay: 50,
         delayOnTouchOnly: true,

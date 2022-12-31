@@ -3,9 +3,9 @@ export default {
   mounted() {
     this.textarea = this.getTextarea()
     this.el.addEventListener("heading_section:reveal_form", this.revealForm.bind(this))
-    this.el.addEventListener("heading_section:hide_form", this.hideForm.bind(this))
+    this.el.addEventListener("heading_section:save", this.save.bind(this))
     this.textarea.addEventListener("keyup", this.autofit.bind(this))
-    this.textarea.addEventListener("keydown", this.save.bind(this))
+    this.textarea.addEventListener("keydown", this.saveOnEnter.bind(this))
   },
 
   // destroyed() {
@@ -41,19 +41,23 @@ export default {
     return this.el.querySelector('.js-form')
   },
 
-  save(event){
+  saveOnEnter(event){
     if (event.keyCode == 13) {
       // pressed enter so set the heading to the contents of the form and then
       // reveal it and bubble up a submit event so the liveview/live component
       // can react accordingly with a phx-submit
       event.preventDefault();
-      this.getHeadingText().textContent = this.getTextarea().value
-      this.getForm().style.display = 'none'
-      this.getHeading().style.display = 'block'
-      this.getForm().dispatchEvent(
-        new Event("submit", {bubbles: true, cancelable: true})
-      );
+      this.save(event);
     }
+  },
+
+  save(event){
+    this.getHeadingText().textContent = this.getTextarea().value
+    this.getForm().style.display = 'none'
+    this.getHeading().style.display = 'block'
+    this.getForm().dispatchEvent(
+      new Event("submit", {bubbles: true, cancelable: true})
+    );
   },
 
   autofit() {

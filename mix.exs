@@ -39,6 +39,7 @@ defmodule Zapp.MixProject do
       {:ecto_sql, "~> 3.6"},
       {:ecto_ranked, "~> 0.4.0"},
       {:extwitter, "~> 0.12"},
+      {:html_sanitize_ex, "~> 1.4"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},

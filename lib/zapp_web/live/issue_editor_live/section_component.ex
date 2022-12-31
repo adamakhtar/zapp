@@ -16,13 +16,11 @@ defmodule ZappWeb.IssueEditorLive.SectionComponent do
            class="js-draggable group mb-4"
             data-section-id={@section.id}>
         <div class="relative">
-          <div class="js-handle hover:cursor-grab opacity-0 group-hover:opacity-100 transition-opacity ease-out absolute -left-3 -top-3 px-1 py-1 bg-white rounded-full border border-gray-300">
+          <div class="js-handle hover:cursor-grab opacity-0 group-hover:opacity-100 transition-opacity ease-out absolute -left-6 top-2 px-1 py-1 bg-white rounded-full border border-gray-300">
             <a href="#"
-               class="block"
-               phx-click="delete"
-               phx-target={@myself}>
+               class="block">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
               </svg>
             </a>
           </div>
