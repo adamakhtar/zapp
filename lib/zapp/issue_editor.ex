@@ -13,9 +13,7 @@ defmodule Zapp.IssueEditor do
 
   # TODO test
   def add_tweet_to_issue(%Issue{} = issue, %{tweet_id: tweet_id, position: position}) do
-    tweet =  Client.get_tweet(tweet_id, [:extended_entities, :media])
-
-    with tweet <- Client.get_tweet(tweet_id),
+    with tweet <- Client.get_tweet(tweet_id, [:extended_entities, :media]),
          {:ok, %TweetSection{} = tweet_section} <- create_tweet_section(issue, position, tweet) do
       {:ok, tweet_section}
     else
@@ -30,7 +28,7 @@ defmodule Zapp.IssueEditor do
   end
 
   defp transform_tweet_into_args(tweet) do
-    media_args = Enum.map(tweet.media, &Map.from_struct(&1))
+    media_args = transform_media_into_args(tweet.media)
 
     tweet
     |> Map.from_struct
@@ -41,6 +39,10 @@ defmodule Zapp.IssueEditor do
         user_profile_image_url: tweet.user.profile_image_url,
         tweet_section_medias: media_args
       })
+  end
+
+  defp transform_media_into_args(media) do
+    Enum.map(media, fn m -> %{url: m.media_url, type: m.type} end)
   end
 
 
