@@ -30,7 +30,7 @@ defmodule ZappWeb.IssueEditorLive.HeadingSectionComponent do
               rows: 1,
               autofocus: true,
               height: 'auto',
-              class: "overflow-y-hidden resize-none focus:ring-0  w-full text-2xl font-semibold leading-tight px-0 py-0"
+              class: "overflow-y-hidden resize-none border-0 ring-0 focus:ring-0  w-full text-2xl font-semibold leading-tight px-0 py-0"
               ) %>
 
             <% # No submit button required. User can just press enter or click away to submit %>
