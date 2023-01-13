@@ -50,5 +50,7 @@ defmodule ZappWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
+  plug ZappWeb.Plugs.Subdomain, %{ subdomain_router: ZappWeb.SubdomainRouter }
   plug ZappWeb.Router
 end
+

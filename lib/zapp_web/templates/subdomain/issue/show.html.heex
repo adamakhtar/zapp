@@ -1,0 +1,12 @@
+<h1>Show Issue</h1>
+
+<ul>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @issue.title %>
+  </li>
+
+</ul>
+
+<span><%= link "Back", to: Routes.subdomain_issue_path(@conn, :index) %></span>
