@@ -1,19 +1,17 @@
 # Zapp
 
-To start your Phoenix server:
+## Dependencies
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+Caddy server - so we can access the app in local development via https://somedomain.localhost
+`brew install caddy`
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+## Setup
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+- `cp .env.sample .env` and update with necessary info
+- `cp Caddyfile.sample Caddyfile` and update if necessary
+- Install dependencies with `mix deps.get`
+- Create and migrate your database with `mix ecto.setup`
+- Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
-## Learn more
+Visit [https:zapp.locahost](https:zapp.locahost) in your browser.
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix

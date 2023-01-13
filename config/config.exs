@@ -10,9 +10,10 @@ import Config
 config :zapp,
   ecto_repos: [Zapp.Repo]
 
+
 # Configures the endpoint
 config :zapp, ZappWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: System.get_env("APP_HOST")],
   render_errors: [view: ZappWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Zapp.PubSub,
   live_view: [signing_salt: "8CCHSkZo"]
