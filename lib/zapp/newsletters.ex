@@ -8,6 +8,7 @@ defmodule Zapp.Newsletters do
 
   alias Zapp.Accounts.{Account, User}
   alias Zapp.Newsletters.{Newsletter, Issue, Section, TweetSection, HeadingSection, TextSection}
+  alias Zapp.SecureRandom
 
   @doc """
   Returns the list of newsletters.
@@ -37,6 +38,14 @@ defmodule Zapp.Newsletters do
 
   """
   def get_newsletter!(id), do: Repo.get!(Newsletter, id)
+
+  # TODO - test
+  def get_newsletter_from_subdomain(subdomain) do
+    query =
+      from n in Newsletter,
+        where: n.subdomain == ^subdomain
+    Repo.one(query)
+  end
 
   # TODO - test
   # Currently accounts can only have one newsletter
@@ -80,7 +89,8 @@ defmodule Zapp.Newsletters do
 
   """
   def create_demo_newsletter(%Account{} = account) do
-    newsletter_attrs = %{name: "Amazing Newsletter", account_id: account.id}
+    demo_subdomain = "demo-#{SecureRandom.hex(6)}"
+    newsletter_attrs = %{name: "Amazing Newsletter", account_id: account.id, subdomain: demo_subdomain}
     issue_attrs = %{title: "The Maiden Issue", account_id: account.id}
     Ecto.Multi.new()
     |> Ecto.Multi.insert(:newsletter, change_newsletter(%Newsletter{}, newsletter_attrs))

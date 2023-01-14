@@ -2,6 +2,7 @@ defmodule ZappWeb.SubdomainRouter do
   use ZappWeb, :router
 
   import ZappWeb.IdentityAuth
+  import ZappWeb.Subomain.NewsletterAuth
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -12,10 +13,11 @@ defmodule ZappWeb.SubdomainRouter do
     plug :put_secure_browser_headers
     plug :fetch_current_identity
     plug ZappWeb.Plugs.CurrentUserPlug
+    plug ZappWeb.Plugs.Subdomain.LoadNewsletterFromSubdomain
   end
 
   scope "/", ZappWeb.Subdomain, as: :subdomain do
-    pipe_through :browser # Use the default browser stack
+    pipe_through [:browser, :require_newsletter_exists_for_subdomain]
 
     get "/", IssueController, :index
   end

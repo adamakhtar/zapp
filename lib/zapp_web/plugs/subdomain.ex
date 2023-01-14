@@ -11,7 +11,7 @@ defmodule ZappWeb.Plugs.Subdomain do
     )
   end
 
-# unpack subdomain_router argument
+  # unpack subdomain_router argument
   def call(%Plug.Conn{host: host} = conn, %{root_host: root_host, subdomain_router: router} = _opts) do
     case extract_subdomain(host, root_host) do
       subdomain when byte_size(subdomain) > 0 ->

@@ -21,7 +21,7 @@ defmodule ZappWeb.Router do
   scope "/", ZappWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/", PageController, :index, as: :root
   end
 
   # Other scopes may use custom stacks.

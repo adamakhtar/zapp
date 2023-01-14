@@ -237,7 +237,8 @@ CREATE TABLE public.newsletters (
     name character varying(255),
     account_id bigint,
     inserted_at timestamp(0) without time zone NOT NULL,
-    updated_at timestamp(0) without time zone NOT NULL
+    updated_at timestamp(0) without time zone NOT NULL,
+    subdomain character varying(255) NOT NULL
 );
 
 
@@ -346,7 +347,7 @@ ALTER SEQUENCE public.sections_id_seq OWNED BY public.sections.id;
 
 CREATE TABLE public.text_sections (
     id bigint NOT NULL,
-    body character varying(255),
+    body text,
     inserted_at timestamp(0) without time zone NOT NULL,
     updated_at timestamp(0) without time zone NOT NULL
 );
@@ -372,14 +373,52 @@ ALTER SEQUENCE public.text_sections_id_seq OWNED BY public.text_sections.id;
 
 
 --
+-- Name: tweet_section_medias; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tweet_section_medias (
+    id bigint NOT NULL,
+    url character varying(255),
+    thumbnail_url character varying(255),
+    tweet_section_id bigint,
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL
+);
+
+
+--
+-- Name: tweet_section_medias_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.tweet_section_medias_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tweet_section_medias_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.tweet_section_medias_id_seq OWNED BY public.tweet_section_medias.id;
+
+
+--
 -- Name: tweet_sections; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.tweet_sections (
     id bigint NOT NULL,
-    body text,
+    text text,
     inserted_at timestamp(0) without time zone NOT NULL,
-    updated_at timestamp(0) without time zone NOT NULL
+    updated_at timestamp(0) without time zone NOT NULL,
+    user_name character varying(255),
+    user_screen_name character varying(255),
+    user_profile_image_url character varying(255),
+    retweet_count integer,
+    favorite_count integer
 );
 
 
@@ -505,6 +544,13 @@ ALTER TABLE ONLY public.text_sections ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: tweet_section_medias id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tweet_section_medias ALTER COLUMN id SET DEFAULT nextval('public.tweet_section_medias_id_seq'::regclass);
+
+
+--
 -- Name: tweet_sections id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -607,6 +653,14 @@ ALTER TABLE ONLY public.text_sections
 
 
 --
+-- Name: tweet_section_medias tweet_section_medias_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tweet_section_medias
+    ADD CONSTRAINT tweet_section_medias_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: tweet_sections tweet_sections_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -679,6 +733,13 @@ CREATE INDEX newsletters_account_id_index ON public.newsletters USING btree (acc
 
 
 --
+-- Name: newsletters_subdomain_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX newsletters_subdomain_index ON public.newsletters USING btree (subdomain);
+
+
+--
 -- Name: oauth_credentials_user_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -697,6 +758,13 @@ CREATE INDEX sections_issue_id_index ON public.sections USING btree (issue_id);
 --
 
 CREATE INDEX sections_tweet_section_id_index ON public.sections USING btree (tweet_section_id);
+
+
+--
+-- Name: tweet_section_medias_tweet_section_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX tweet_section_medias_tweet_section_id_index ON public.tweet_section_medias USING btree (tweet_section_id);
 
 
 --
@@ -795,6 +863,14 @@ ALTER TABLE ONLY public.sections
 
 
 --
+-- Name: tweet_section_medias tweet_section_medias_tweet_section_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tweet_section_medias
+    ADD CONSTRAINT tweet_section_medias_tweet_section_id_fkey FOREIGN KEY (tweet_section_id) REFERENCES public.tweet_sections(id);
+
+
+--
 -- Name: users users_account_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -830,3 +906,7 @@ INSERT INTO public."schema_migrations" (version) VALUES (20221031122358);
 INSERT INTO public."schema_migrations" (version) VALUES (20221127075721);
 INSERT INTO public."schema_migrations" (version) VALUES (20221204043058);
 INSERT INTO public."schema_migrations" (version) VALUES (20221204062727);
+INSERT INTO public."schema_migrations" (version) VALUES (20221208122226);
+INSERT INTO public."schema_migrations" (version) VALUES (20221211050246);
+INSERT INTO public."schema_migrations" (version) VALUES (20221230063337);
+INSERT INTO public."schema_migrations" (version) VALUES (20230113145234);
