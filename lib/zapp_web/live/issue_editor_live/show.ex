@@ -33,6 +33,7 @@ defmodule ZappWeb.IssueEditorLive.Show do
               ZappWeb.IssueEditorLive.SidebarComponent,
               id: "sidebar",
               current_account: @current_account,
+              current_user: @current_user,
               issue: @issue,
               twitter_credentials: @twitter_credentials
             ) %>

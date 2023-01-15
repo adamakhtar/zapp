@@ -1,4 +1,4 @@
-<h1>Subdomain <%= @subdomain %> Listing Issues</h1>
+<h1><%= @newsletter.subdomain %></h1>
 
 <table>
   <thead>
@@ -9,14 +9,10 @@
     </tr>
   </thead>
   <tbody>
-<%= for issue <- @issues do %>
-    <tr>
-      <td><%= issue.title %></td>
-
-      <td>
-        <span><%= link "Show", to: Routes.subdomain_issue_path(@conn, :show, issue) %></span>
-      </td>
-    </tr>
-<% end %>
+    <%= for issue <- @issues do %>
+      <tr>
+        <td><%= link issue.title, to: SubdomainRoutes.subdomain_issue_path(@conn, :show, issue) %></td>
+      </tr>
+    <% end %>
   </tbody>
 </table>

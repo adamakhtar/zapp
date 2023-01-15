@@ -164,7 +164,8 @@ defmodule Zapp.Newsletters do
     query =
       from i in Issue,
         where: i.account_id == ^newsletter.account_id,
-        where: i.newsletter_id == ^newsletter.id
+        where: i.newsletter_id == ^newsletter.id,
+        order_by: [desc: i.inserted_at]
 
     Repo.all(query)
   end

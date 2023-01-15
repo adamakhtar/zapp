@@ -2,26 +2,27 @@ defmodule ZappWeb.IssueEditorLive.SidebarComponent do
   use ZappWeb, :live_component
 
   alias Zapp.Twitter
+  alias Zapp.Accounts.OauthCredential
 
   @impl true
   def render(assigns) do
     ~H"""
       <div class="bg-gray-50 fixed right-0 bottom-0 border-l border-gray-300 max-w-sm bg-white" style="top: 45px;">
         <div class="flex flex-col h-full">
-          <div class="px-3 py-2 border-b border-gray-300">
-            <.form
-              let={f}
-              for={:s}
-              phx-change="list_selected"
-              phx-target={@myself}
-            >
-              <%= select(f, :list_id, Enum.map(@lists, &{&1.name, &1.id}), selected: @current_list.id) %>
-            </.form>
-          </div>
+          <%= if @twitter_credentials do %>
+            <div class="px-3 py-2 border-b border-gray-300">
+              <.form
+                let={f}
+                for={:s}
+                phx-change="list_selected"
+                phx-target={@myself}
+              >
+                <%= select(f, :list_id, Enum.map(@lists, &{&1.name, &1.id}), selected: @current_list.id) %>
+              </.form>
+            </div>
 
-          <div class="px-3 py-2 flex-grow overflow-auto overscroll-contain"
-               data-dropzone="tweets">
-            <%= if @twitter_credentials do %>
+            <div class="px-3 py-2 flex-grow overflow-auto overscroll-contain"
+                 data-dropzone="tweets">
               <%= for tweet <- @tweets do %>
                 <div draggable="true"
                      data-tweet-id={"#{tweet.id}"}
@@ -85,21 +86,22 @@ defmodule ZappWeb.IssueEditorLive.SidebarComponent do
                 <button class="bg-blue-600 text-blue-50 hover:bg-blue-500 px-4 py-2 rounded-md w-full"
                         phx-click="load_more_tweets" phx-target={ @myself } >Load More</button>
               </div>
-            <% else %>
-              <%= link "Connect Twitter", to: Routes.oauth_path(@socket, :request, "twitter") %>
-            <% end %>
-          </div>
+            </div>
+          <% else %>
+            <%= link "Connect Twitter", to: Routes.oauth_path(@socket, :request, "twitter") %>
+          <% end %>
         </div>
       </div>
     """
   end
 
   @impl true
-  def update(%{issue: issue, twitter_credentials: twitter_credentials, current_account: current_account} = assigns, socket) do
-    Twitter.Client.configure(twitter_credentials.token, twitter_credentials.secret)
-    lists = Twitter.list_lists(current_account.id, issue.newsletter_id)
-    current_list = List.first(lists)
+  def update(%{ issue: issue, twitter_credentials: %OauthCredential{} = twitter_credentials} = assigns, socket) do
 
+    Twitter.Client.configure(twitter_credentials.token, twitter_credentials.secret)
+    Twitter.sync_lists(Twitter.Client, assigns.current_user, issue.newsletter, twitter_credentials)
+    lists = Twitter.list_lists(assigns.current_account.id, issue.newsletter_id)
+    current_list = List.first(lists)
     tweets = fetch_list_timeline(
       twitter_credentials.service_id,
       current_list.twitter_id
@@ -111,6 +113,14 @@ defmodule ZappWeb.IssueEditorLive.SidebarComponent do
      |> assign(:tweets, tweets)
      |> assign(:current_list, current_list)
      |> assign(:lists, lists)
+    }
+  end
+
+  @impl true
+  def update(%{issue: issue, twitter_credentials: nil, current_account: current_account} = assigns, socket) do
+    {:ok,
+     socket
+     |> assign(assigns)
     }
   end
 

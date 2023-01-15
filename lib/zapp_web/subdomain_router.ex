@@ -19,7 +19,8 @@ defmodule ZappWeb.SubdomainRouter do
   scope "/", ZappWeb.Subdomain, as: :subdomain do
     pipe_through [:browser, :require_newsletter_exists_for_subdomain]
 
-    get "/", IssueController, :index
+    get "/", IssueController, :index, as: :issue
+    get "/issues/:id", IssueController, :show, as: :issue
   end
 
   # Other scopes may use custom stacks.
