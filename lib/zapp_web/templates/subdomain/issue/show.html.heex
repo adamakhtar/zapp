@@ -78,3 +78,8 @@
 <% end %>
 
 
+<%= render ZappWeb.Subdomain.SubscriberView,
+          "form.html",
+          assigns
+            |> Map.put(:changeset, @subscriber_changeset)
+            |> Map.put(:action, SubdomainRoutes.subdomain_subscriber_path(@conn, :create)) %>

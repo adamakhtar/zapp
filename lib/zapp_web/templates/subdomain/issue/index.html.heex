@@ -1,13 +1,6 @@
 <h1><%= @newsletter.subdomain %></h1>
 
 <table>
-  <thead>
-    <tr>
-      <th>Title</th>
-
-      <th></th>
-    </tr>
-  </thead>
   <tbody>
     <%= for issue <- @issues do %>
       <tr>
@@ -16,3 +9,9 @@
     <% end %>
   </tbody>
 </table>
+
+<%= render ZappWeb.Subdomain.SubscriberView,
+          "form.html",
+          assigns
+            |> Map.put(:changeset, @subscriber_changeset)
+            |> Map.put(:action, SubdomainRoutes.subdomain_subscriber_path(@conn, :create)) %>

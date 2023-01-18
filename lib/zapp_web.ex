@@ -24,6 +24,7 @@ defmodule ZappWeb do
       import Plug.Conn
       import ZappWeb.Gettext
       alias ZappWeb.Router.Helpers, as: Routes
+      alias ZappWeb.SubdomainRouter.Helpers, as: SubdomainRoutes
     end
   end
 
@@ -99,6 +100,7 @@ defmodule ZappWeb do
       import ZappWeb.ErrorHelpers
       import ZappWeb.Gettext
       alias ZappWeb.Router.Helpers, as: Routes
+      alias ZappWeb.SubdomainRouter.Helpers, as: SubdomainRoutes
     end
   end
 

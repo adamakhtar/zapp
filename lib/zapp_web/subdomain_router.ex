@@ -14,6 +14,7 @@ defmodule ZappWeb.SubdomainRouter do
     plug :fetch_current_identity
     plug ZappWeb.Plugs.CurrentUserPlug
     plug ZappWeb.Plugs.Subdomain.LoadNewsletterFromSubdomain
+    plug ZappWeb.Plugs.NavigationHistory
   end
 
   scope "/", ZappWeb.Subdomain, as: :subdomain do
@@ -21,6 +22,8 @@ defmodule ZappWeb.SubdomainRouter do
 
     get "/", IssueController, :index, as: :issue
     get "/issues/:id", IssueController, :show, as: :issue
+
+    resources "/subscribers", SubscriberController, only: [:new, :create]
   end
 
   # Other scopes may use custom stacks.
