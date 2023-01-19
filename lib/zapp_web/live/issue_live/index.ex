@@ -3,6 +3,37 @@ defmodule ZappWeb.IssueLive.Index do
 
   alias Zapp.Newsletters
 
+  def render(assigns) do
+    ~H"""
+      <h1>Listing Issues for <%= @newsletter.name %></h1>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="issues">
+          <%= for issue <- @issues do %>
+            <tr id={"issue-#{issue.id}"}>
+              <td><%= issue.title %></td>
+
+              <td>
+                <span><%= live_redirect "Show", to: Routes.issue_show_path(@socket, :show, issue) %></span>
+                <span><%= live_redirect "Edit", to: Routes.issue_editor_show_path(@socket, :show, issue) %></span>
+                <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: issue.id, data: [confirm: "Are you sure?"] %></span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <span><%= live_patch "New Issue", to: Routes.issue_index_path(@socket, :new) %></span>
+    """
+  end
+
   @impl true
   def mount(_params, _session, socket) do
     newsletter = Newsletters.get_account_newsletter!(socket.assigns.current_account)
