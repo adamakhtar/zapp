@@ -259,9 +259,13 @@ defmodule Zapp.Newsletters do
     Repo.delete(issue)
   end
 
-  def publish_issue(%Issue{} = issue) do
-    IssueNotifier.deliver_issue(%{email: "a@a.com", name: "Adam"})
-    |> Mailer.deliver
+  def publish_issue(%Issue{} = issue, subscribers) do
+    Enum.each(subscribers, fn subscriber ->
+      IssueNotifier.deliver_issue(issue, subscriber)
+        |> Mailer.deliver
+    end)
+
+    {:ok, 1}
   end
 
   @doc """

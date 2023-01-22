@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "alpinejs": "^3.10.5",
+    "mjml": "^4.13.0",
     "sortablejs": "^1.15.0",
     "trix": "^2.0.4"
   }

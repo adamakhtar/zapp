@@ -17,8 +17,11 @@ defmodule Zapp.Audience do
       [%Subscriber{}, ...]
 
   """
-  def list_subscribers do
-    Repo.all(Subscriber)
+  def list_newsletter_subscribers(newsletter_id) do
+    query =
+      from s in Subscriber,
+        where: s.newsletter_id == ^newsletter_id
+    Repo.all(query)
   end
 
   @doc """

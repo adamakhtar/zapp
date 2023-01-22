@@ -1,17 +1,21 @@
 defmodule Zapp.Newsletters.IssueNotifier do
-  use Phoenix.Swoosh, view: ZappWeb.Mailers.IssueNotifierView,
-                      layout: {ZappWeb.Mailers.LayoutView, :layout}
+  use Phoenix.Swoosh, view: ZappWeb.Mailers.IssueNotifierView
 
   alias Zapp.Newsletters.Issue
   alias Zapp.Audience.Subscriber
 
-  def deliver_issue(%{name: name, email: email}) do
+  def deliver_issue(%Issue{} = issue, %Subscriber{} = subscriber) do
     new()
-    |> to({name, email})
+    |> to({"", subscriber.email})
     |> from({"Phoenix Team", "team@example.com"})
-    |> subject("Welcome to Phoenix, #{name}!")
-    |> render_body("issue.html")
-    |> premail()
+    |> subject(issue.title)
+    |> render_body("issue.html", %{issue: issue})
+    |> render_mjml()
+  end
+
+  def render_mjml(email) do
+    {:ok, html_body} = Mjml.to_html(Map.get(email, :html_body))
+    Map.put(email, :html_body, html_body)
   end
 
   defp premail(email) do

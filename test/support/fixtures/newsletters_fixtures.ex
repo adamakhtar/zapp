@@ -6,7 +6,8 @@ defmodule Zapp.NewslettersFixtures do
 
   def valid_newsletter_attributes(attrs \\ %{}) do
      Enum.into(attrs, %{
-      name: "Elixir Weekly"
+      name: "Elixir Weekly",
+      subdomain: "elixir-weekly"
     })
   end
 

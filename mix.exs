@@ -46,6 +46,7 @@ defmodule Zapp.MixProject do
       {:phoenix_live_view, "~> 0.17.5"},
       {:phoenix_swoosh, "~> 1.0"},
       {:floki, ">= 0.30.0"},
+      {:mjml, "~> 1.4.0"},
       {:phoenix_live_dashboard, "~> 0.6"},
       {:premailex, "~> 0.3.0"},
       {:esbuild, "~> 0.4", runtime: Mix.env() == :dev},

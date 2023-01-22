@@ -1,3 +1,38 @@
-<div>
-  <h1>Welcome to Sample!</h1>
-</div>
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <%= for section <- @issue.sections do %>
+          <%= if section.tweet_section do %>
+            <mj-text  align="center"
+                  font-style="italic"
+                      font-size="20px"
+                      color="#626262">
+              <%= section.tweet_section.text %>
+            </mj-text>
+          <% end %>
+
+          <%= if section.heading_section do %>
+            <mj-text  align="center"
+                  font-style="italic"
+                      font-size="20px"
+                      color="#626262">
+
+              <%= section.heading_section.title %>
+            </mj-text>
+          <% end %>
+
+          <%= if section.text_section do %>
+            <mj-text  align="center"
+                  font-style="italic"
+                      font-size="20px"
+                      color="#626262">
+
+              <%= section.text_section.body %>
+            </mj-text>
+          <% end %>
+        <% end %>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
