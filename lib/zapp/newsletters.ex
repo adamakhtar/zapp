@@ -7,8 +7,9 @@ defmodule Zapp.Newsletters do
   alias Zapp.Repo
 
   alias Zapp.Accounts.{Account, User}
-  alias Zapp.Newsletters.{Newsletter, Issue, Section, TweetSection, HeadingSection, TextSection}
+  alias Zapp.Newsletters.{Newsletter, Issue, IssueNotifier, Section, TweetSection, HeadingSection, TextSection}
   alias Zapp.SecureRandom
+  alias Zapp.Mailer
 
   @doc """
   Returns the list of newsletters.
@@ -256,6 +257,11 @@ defmodule Zapp.Newsletters do
   """
   def delete_issue(%Issue{} = issue) do
     Repo.delete(issue)
+  end
+
+  def publish_issue(%Issue{} = issue) do
+    IssueNotifier.deliver_issue(%{email: "a@a.com", name: "Adam"})
+    |> Mailer.deliver
   end
 
   @doc """
